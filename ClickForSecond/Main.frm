@@ -3,15 +3,15 @@ Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form Main 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "CFS+"
-   ClientHeight    =   6255
+   ClientHeight    =   8385
    ClientLeft      =   150
    ClientTop       =   780
-   ClientWidth     =   6630
+   ClientWidth     =   8055
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6255
-   ScaleWidth      =   6630
+   ScaleHeight     =   8385
+   ScaleWidth      =   8055
    StartUpPosition =   3  '窗口缺省
    Begin VB.CommandButton CopyE 
       Caption         =   "复制记录"
@@ -19,35 +19,35 @@ Begin VB.Form Main
       Left            =   1320
       TabIndex        =   12
       ToolTipText     =   "将大事录复制到剪贴板"
-      Top             =   1800
+      Top             =   3000
       Width           =   1095
    End
    Begin VB.CommandButton Research 
       Caption         =   "研究"
       Height          =   375
-      Left            =   5400
+      Left            =   3960
       TabIndex        =   11
-      Top             =   3720
-      Width           =   1095
+      Top             =   3840
+      Width           =   1215
    End
    Begin MSComDlg.CommonDialog Common 
-      Left            =   1560
-      Top             =   1200
+      Left            =   2040
+      Top             =   2280
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
    End
    Begin VB.Timer Timer1 
       Interval        =   1000
-      Left            =   960
-      Top             =   1200
+      Left            =   1440
+      Top             =   2280
    End
    Begin VB.CommandButton Command1 
       Caption         =   "商店"
       Height          =   375
       Left            =   3960
       TabIndex        =   9
-      Top             =   3720
+      Top             =   3360
       Width           =   1215
    End
    Begin VB.CommandButton Clear 
@@ -56,35 +56,35 @@ Begin VB.Form Main
       Left            =   2520
       TabIndex        =   8
       ToolTipText     =   "清空大事录"
-      Top             =   1800
+      Top             =   3000
       Width           =   1215
    End
    Begin VB.TextBox User 
       Height          =   270
-      Left            =   3960
+      Left            =   5400
       Locked          =   -1  'True
       TabIndex        =   2
       Text            =   "Youmu"
       ToolTipText     =   "修改名字会导致记录重置"
-      Top             =   2280
+      Top             =   3000
       Width           =   2535
    End
    Begin VB.TextBox EventS 
-      Height          =   3855
+      Height          =   4815
       Left            =   120
       Locked          =   -1  'True
       MultiLine       =   -1  'True
       ScrollBars      =   2  'Vertical
       TabIndex        =   0
-      Top             =   2280
+      Top             =   3480
       Width           =   3735
    End
    Begin VB.Label Persec 
       Caption         =   "现在1s最少能续: 0s"
       Height          =   255
-      Left            =   3960
+      Left            =   5400
       TabIndex        =   10
-      Top             =   3360
+      Top             =   4080
       Width           =   2535
    End
    Begin VB.Label WorkPlace 
@@ -101,51 +101,51 @@ Begin VB.Form Main
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   1815
+      Height          =   2895
       Left            =   0
       TabIndex        =   7
       Top             =   0
-      Width           =   6615
+      Width           =   8055
    End
    Begin VB.Label Label4 
       Caption         =   "大事录："
       Height          =   255
       Left            =   120
       TabIndex        =   6
-      Top             =   1920
+      Top             =   3120
       Width           =   975
    End
    Begin VB.Label Label3 
       Caption         =   "s"
       Height          =   255
-      Left            =   6240
+      Left            =   7680
       TabIndex        =   5
-      Top             =   3000
+      Top             =   3720
       Width           =   255
    End
    Begin VB.Label Total 
       Alignment       =   1  'Right Justify
       Height          =   255
-      Left            =   3960
+      Left            =   5400
       TabIndex        =   4
-      Top             =   3000
+      Top             =   3720
       Width           =   2295
    End
    Begin VB.Label Label2 
       Caption         =   "到目前为止您共奉献了："
       Height          =   255
-      Left            =   3960
+      Left            =   5400
       TabIndex        =   3
-      Top             =   2640
+      Top             =   3360
       Width           =   2535
    End
    Begin VB.Label Label1 
       Caption         =   "同志，你的名字是："
       Height          =   255
-      Left            =   3960
+      Left            =   3840
       TabIndex        =   1
-      Top             =   1920
-      Width           =   2535
+      Top             =   3000
+      Width           =   1695
    End
    Begin VB.Menu Menu 
       Caption         =   "菜单"
@@ -179,22 +179,22 @@ Private Sub Form_Load()
     chg = 0
     Total = 0
     For I = 0 To NumTopS
+        ShopF.BuyI(I).Enabled = False
         NumTotalS(I) = 0
         ItemPS(I) = 1
     Next I
     For I = 0 To NumTopR
         NumTotalR(I) = False
+        ResTI(0, I) = False
         NumTotalRN(I) = False
-        Select Case I
-        End Select
     Next I
     ResearchF.Resable.AddItem NameR(0)
-    ResearchF.Resable.AddItem NameR(4)
+    ResearchF.Resable.AddItem NameR(10)
     NumTotalRN(0) = True
-    NumTotalRN(4) = True
+    NumTotalRN(10) = True
     ClickP = 1
-    Load ShopF
-    Load ResearchF
+    Call NumPer
+    Call ResRef
 End Sub
 
 Private Sub Clear_Click()
@@ -229,13 +229,7 @@ Private Sub Timer1_Timer()
 End Sub
 
 Private Sub User_Change()
-Dim IUC%
-    Ts = 0
-    Total = str(Ts)
-    For IUC = 0 To NumTopS
-        NumTotalS(IUC) = 0
-    Next IUC
-    Call Refe
+    Call Form_Load
 End Sub
 
 Private Sub User_Click()

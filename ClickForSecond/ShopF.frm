@@ -12,7 +12,17 @@ Begin VB.Form ShopF
    ScaleHeight     =   3030
    ScaleWidth      =   5415
    Begin VB.CommandButton BuyI 
-      Caption         =   "三手表套装 90s"
+      Caption         =   "鸭嘴笔套装"
+      Enabled         =   0   'False
+      Height          =   615
+      Index           =   4
+      Left            =   1800
+      TabIndex        =   9
+      Top             =   1440
+      Width           =   1575
+   End
+   Begin VB.CommandButton BuyI 
+      Caption         =   "三手表套装"
       Enabled         =   0   'False
       Height          =   615
       Index           =   3
@@ -22,7 +32,7 @@ Begin VB.Form ShopF
       Width           =   1575
    End
    Begin VB.CommandButton BuyI 
-      Caption         =   "赛艇 45s"
+      Caption         =   "赛艇"
       Enabled         =   0   'False
       Height          =   615
       Index           =   2
@@ -32,7 +42,7 @@ Begin VB.Form ShopF
       Width           =   1575
    End
    Begin VB.CommandButton BuyI 
-      Caption         =   "黑框眼镜 10s"
+      Caption         =   "黑框眼镜"
       Enabled         =   0   'False
       Height          =   615
       Index           =   0
@@ -42,13 +52,22 @@ Begin VB.Form ShopF
       Width           =   1575
    End
    Begin VB.CommandButton BuyI 
-      Caption         =   "《他改变了中国》 20s"
+      Caption         =   "《他改变了中国》"
       Enabled         =   0   'False
       Height          =   615
       Index           =   1
       Left            =   1800
       TabIndex        =   0
       Top             =   360
+      Width           =   1575
+   End
+   Begin VB.Label NumI 
+      Caption         =   "目前共0个"
+      Height          =   255
+      Index           =   4
+      Left            =   1800
+      TabIndex        =   10
+      Top             =   2160
       Width           =   1575
    End
    Begin VB.Label NumI 

@@ -138,7 +138,7 @@ Dim resN As Integer, RV As Double
 End Sub
 
 Private Sub Timer1_Timer()
-Dim updateR As Boolean, Resin As Integer, updCed(1) As Boolean
+Dim Resin As Integer
     If Resing.ListCount <> 0 Then
         For TRes = Resing.ListCount - 1 To 0 Step -1
             Resin = -1
@@ -150,24 +150,27 @@ Dim updateR As Boolean, Resin As Integer, updCed(1) As Boolean
                 NumTotalR(Resin) = True
                 Resed.AddItem NameR(Resin)
                 Resing.RemoveItem TRes
-                UpdEve NameR(Resin) & "研究成功!"
+                UpdEve "“" & NameR(Resin) & "”" & "研究成功!"
                 Select Case Resin
+                    '添加新研究时直接粘贴
                     Case 0: UpdEve "现在已经可以购买黑框眼镜了!"
                     Case 1: UpdEve "现在已经可以购买《他改变了中国》了!"
                     Case 2: UpdEve "现在已经可以购买赛艇了!"
                     Case 3: UpdEve "现在已经可以购买三手表套装了!"
-                    Case 4: UpdEve "工作区已升级!现在效率为2"
+                    Case 4: UpdEve "现在已经可以购买鸭嘴笔套装了!"
                     Case 5: UpdEve "黑框眼镜已升级为意大利窄边眼镜!"
+                    Case 6: UpdEve "《他改变了中国》已升级为《江泽民文选》!"
+                    Case 7: UpdEve "普通材料赛艇已升级为复合材料赛艇!"
+                    Case 8: UpdEve "机械手表套装已升级为电子手表套装!"
+                    Case 9: UpdEve "鸭嘴笔套装已升级为高效鸭嘴笔!"
+                    Case 10: UpdEve "工作区房屋已建造完毕!"
+                    Case 11: UpdEve "工作区员工宿舍已建造完毕!"
+                    Case 12: UpdEve "工作区广场已建造完毕!"
                 End Select
                 Call ResShop
-                Else: ResTI(1, Resin) = ResTI(1, Resin) - 1
+                ElseIf ResTI(1, Resin) > 0 Then ResTI(1, Resin) = ResTI(1, Resin) - 1
             End If
         Next TRes
     End If
-    If NumTotalS(0) = 10 And NumTotalR(0) And Not (NumTotalRN(5) Or ResTI(0, 5) Or NumTotalR(5)) Then NumTotalRN(5) = True: updateR = True
-    If NumTotalS(0) = 10 And NumTotalR(0) And Not (NumTotalRN(1) Or ResTI(0, 1) Or NumTotalR(1)) Then NumTotalRN(1) = True: updateR = True
-    If NumTotalS(1) = 10 And NumTotalR(1) And Not (NumTotalRN(2) Or ResTI(0, 2) Or NumTotalR(2)) Then NumTotalRN(2) = True: updateR = True
-    If NumTotalS(2) = 10 And NumTotalR(2) And Not (NumTotalRN(3) Or ResTI(0, 3) Or NumTotalR(3)) Then NumTotalRN(3) = True: updateR = True
-    If updateR Then Call ResRef
-    If NumTotalR(4) And Not updCed(0) Then ClickP = 2: updCed(0) = True: Call showWP(4)
+    Call CheckRes
 End Sub

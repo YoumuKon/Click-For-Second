@@ -79,13 +79,19 @@ Dim Boo(NumTopR) As Integer, stuff As String, IRS%
         stuff = stuff & Boo(IRS)
     Next IRS
     ResSave = bitHex(ResSave) & "+" & bitHex(stuff)
+    stuff = ""
+    For IRS = 0 To NumTopR
+        Boo(IRS) = -NumTotalRN(IRS)
+        stuff = stuff & Boo(IRS)
+    Next IRS
+    ResSave = ResSave & "+" & bitHex(stuff)
 End Function
 
 Public Sub bitBoo(str$, arrb() As Boolean)
-    For I = 1 To NumTopR + 1
-        If Mid(str, I, 1) = "1" Then
-            arrb(I - 1) = True
-            Else: arrb(I - 1) = False
+    For I = 0 To NumTopR
+        If Mid(str, I + 1, 1) = "1" Then
+            arrb(I) = True
+            Else: arrb(I) = False
         End If
     Next I
 End Sub
