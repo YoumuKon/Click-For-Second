@@ -139,7 +139,7 @@ Dim resN As Integer, RV&
 End Sub
 
 Private Sub Timer1_Timer()
-Dim updateR As Boolean, Resin As Integer
+Dim updateR As Boolean, Resin As Integer, updCed(1) As Boolean
     If Resing.ListCount <> 0 Then
         For TRes = Resing.ListCount - 1 To 0 Step -1
             Resin = -1
@@ -151,6 +151,14 @@ Dim updateR As Boolean, Resin As Integer
                 NumTotalR(Resin) = True
                 Resed.AddItem NameR(Resin)
                 Resing.RemoveItem TRes
+                UpdEve NameR(Resin) & "研究成功!"
+                Select Case NameR(Resin)
+                    Case NameR(0): UpdEve "现在已经可以购买黑框眼镜了!"
+                    Case NameR(1): UpdEve "现在已经可以购买《他改变了中国》了!"
+                    Case NameR(2): UpdEve "现在已经可以购买赛艇了!"
+                    Case NameR(3): UpdEve "现在已经可以购买三手表套装了!"
+                    Case NameR(4): UpdEve "工作区已升级!现在效率为2"
+                End Select
                 Call ResShop
                 Else: ResTI(1, Resin) = ResTI(1, Resin) - 1
             End If
@@ -159,6 +167,6 @@ Dim updateR As Boolean, Resin As Integer
     If NumTotalS(0) = 10 And NumTotalR(0) And Not (NumTotalRN(1) Or ResTI(0, 1) Or NumTotalR(1)) Then NumTotalRN(1) = True: updateR = True
     If NumTotalS(1) = 10 And NumTotalR(1) And Not (NumTotalRN(2) Or ResTI(0, 2) Or NumTotalR(2)) Then NumTotalRN(2) = True: updateR = True
     If NumTotalS(2) = 10 And NumTotalR(2) And Not (NumTotalRN(3) Or ResTI(0, 3) Or NumTotalR(3)) Then NumTotalRN(3) = True: updateR = True
-    If NumTotalR(4) Then ClickP = ClickP + 1
     If updateR Then Call ResRef
+    If NumTotalR(4) And Not updCed(0) Then ClickP = 2: updCed(0) = True: Call showWP(4)
 End Sub

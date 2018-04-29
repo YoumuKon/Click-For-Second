@@ -124,7 +124,7 @@ Public Function showde(ind As String) As String
         Case NameR(3): showde = "允许商店售卖三手表套装." & vbCrLf _
         & "消耗" & ResV(3) & "s" & ",研究时长" & ResT(3) & "s"
         Case NameR(4): showde = "为工作区添加一所房子以聘请工人." & vbCrLf _
-        & "消耗" & ResV(4) & "s" & ",研究时长" & ResT(4) & "s" & vbCrLf & "每次点击效率+1"
+        & "消耗" & ResV(4) & "s" & ",研究时长" & ResT(4) & "s" & vbCrLf & "每次点击效率为2"
         Case Else: showde = "点击研究项目显示描述" & vbCrLf & "点击'研究'按钮以开始研究"
     End Select
 End Function
@@ -135,3 +135,14 @@ Public Function ResNum(ind As String) As Integer
     Next I
     ResNum = -1
 End Function
+
+Public Sub showWP(ind As Integer)
+    Select Case ind
+        Case 4: Main.WorkPlace.Caption = "这是多了一个房子的工作区"
+        Case Else: Main.WorkPlace.Caption = "这是工作区"
+    End Select
+End Sub
+
+Public Sub UpdEve(str$)
+    Main.EventS = str & vbCrLf & Main.EventS
+End Sub

@@ -246,6 +246,6 @@ End Sub
 Private Sub WorkPlace_Click()
     Ts = Ts + ClickP
     Total = str(Ts)
-    EventS = User & "为事业贡献了" & ClickP & "s" & vbCrLf & EventS
+    UpdEve User & "为事业贡献了" & ClickP & "s"
 End Sub
 
