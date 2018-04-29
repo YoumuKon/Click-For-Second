@@ -1,6 +1,6 @@
 Attribute VB_Name = "Math"
 Option Explicit
-Public I%, Ts#, I2%, TI%
+Public IT%, Ts#, I2%, TI%, I%
 Public Function BuyCheck(Value&, money#) As Boolean
     BuyCheck = False
     If money >= Value Then
@@ -74,7 +74,7 @@ Dim Boo(NumTopR) As Integer
     ResSave = bitHex(ResSave)
 End Function
 
-Public Sub bitBoo(str$, arrb() As Boolean)
+Public Sub bitBoo(str$, arrb())
     For I = 0 To NumTopR
         If Mid(str, I, 1) = "1" Then
             arrb(I) = True

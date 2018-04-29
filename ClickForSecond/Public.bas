@@ -1,7 +1,8 @@
 Attribute VB_Name = "Public"
 Option Explicit
 Public Const NumTopS = 4 - 1, NumTopR = 5 - 1
-Public ResV(NumTopR) As Integer, ItemV(NumTopS) As Long, ResT(NumTopR) As Integer, ResTN(NumTopR) As Long, ClickP As Integer
+Public ItemV(NumTopS) As Long, ClickP As Integer
+Public ResV(NumTopR) As Integer, ResT(NumTopR) As Integer, ResTI(1, NumTopR)
 Public NumTotalS(NumTopS) As Integer, sper&, chg%, NumTotalR(NumTopR) As Boolean, NameR(NumTopR) As String
 Public NumTotalRN(NumTopR) As Boolean
 Public Sub Mainload()
@@ -46,8 +47,11 @@ Public Sub NumPer()
 End Sub
 
 Public Sub ResRef()
+    ResearchF.Resing.Clear
+    ResearchF.Resed.Clear
     ResearchF.Resable.Clear
     For I = 0 To NumTopR
+        If ResTI(0, I) Then ResearchF.Resing.AddItem NameR(I)
         If NumTotalRN(I) Then ResearchF.Resable.AddItem NameR(I)
         If NumTotalR(I) Then ResearchF.Resed.AddItem NameR(I)
     Next I
@@ -62,7 +66,7 @@ Dim ResHex As String
     Open Main.Common.FileName For Output As #1
     Print #1, Main.User & "|" & str(Ts) & "|" _
     & NumTotalS(0) & "|" & NumTotalS(1) & "|" & NumTotalS(2) & "|" & NumTotalS(3) & "|" _
-    & ResHex
+    & ClickP & "|" & ResHex
     Close #1
 End Sub
 
@@ -82,8 +86,8 @@ Dim str As String, stuffstr, bitL As String
     NumTotalS(I2) = stuffstr(I2 + 2)
     Next I2
     ClickP = stuffstr(NumTopS + 3)
-    bitL = stuffstr(NumTopS + 4)
-    Call bitBoo(hexBit(bitL), NumTotalR())
+    bitR = stuffstr(NumTopS + 4)
+    Call bitBoo(hexBit(bitR), NumTotalR())
     Call Refe
 End Sub
 
@@ -106,8 +110,7 @@ End Function
 
 Public Function ResNum(ind As String) As Integer
     For I = 0 To NumTopR
-        If NameR(I) = ind Then ResNum = I
-        Exit Function
+        If NameR(I) = ind Then ResNum = I: Exit Function
     Next I
     ResNum = -1
 End Function

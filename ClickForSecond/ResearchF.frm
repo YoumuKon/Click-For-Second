@@ -94,7 +94,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-
+Private TRes%
 Private Sub Form_Load()
     Call ResRef
 End Sub
@@ -109,7 +109,7 @@ Private Sub Resing_Click()
     If Resing.ListIndex = -1 Then
         Resde = showde("")
         Else: Resde = showde(Resing.List(Resing.ListIndex)) & vbCrLf & _
-        "现在还剩" & ResTN(ResNum(Resing.List(Resing.ListIndex))) & "s"
+        "现在还剩" & ResTI(1, ResNum(Resing.List(Resing.ListIndex))) & "s"
     End If
     Resable.ListIndex = -1
     Resed.ListIndex = -1
@@ -128,7 +128,9 @@ Dim resN As Integer, RV&
         MsgBox "请选择研究项目!", vbCritical, "未选择研究"
         Else: resN = ResNum(Resable.List(Resable.ListIndex)): RV = ResV(resN)
         If BuyCheck(RV, Ts) Then
-            ResTN(resN) = ResT(resN)
+            ResTI(1, resN) = ResT(resN)
+            NumTotalRN(resN) = False
+            ResTI(0, resN) = True
             Resing.AddItem Resable.List(Resable.ListIndex)
             Resable.RemoveItem Resable.ListIndex
             Else: MsgBox "秒数不够!", 16, "秒数不够"
@@ -137,19 +139,25 @@ Dim resN As Integer, RV&
 End Sub
 
 Private Sub Timer1_Timer()
+Dim updateR As Boolean, Resin As Integer
     If Resing.ListCount <> 0 Then
-        For I = 0 To Resing.ListCount - 1
-            If ResTN(I) = 0 Then
-                NumTotalR(I) = True
-                Resed.AddItem Resing.List(I)
-                Resing.RemoveItem I
-                Else: ResTN(I) = ResTN(I) - 1
+        For TRes = 0 To Resing.ListCount - 1
+            Resin = -1
+            Do While Resin = -1
+                Resin = ResNum(Resing.List(TRes))
+            Loop
+            If ResTI(1, Resin) = 0 Then
+                ResTI(0, Resin) = False
+                NumTotalR(Resin) = True
+                Resed.AddItem NameR(Resin)
+                Resing.RemoveItem TRes
+                Else: ResTI(1, Resin) = ResTI(1, Resin) - 1
             End If
-            If NumTotalR(I) And NumTotalRN(I) Then NumTotalRN(I) = False
-        Next I
+        Next TRes
     End If
-    If NumTotalS(0) = 10 And NumTotalR(0) And Not NumTotalRN(1) Then NumTotalRN(1) = True
-    If NumTotalS(1) = 10 And NumTotalR(1) And Not NumTotalRN(2) Then NumTotalRN(2) = True
-    If NumTotalS(2) = 10 And NumTotalR(2) And Not NumTotalRN(3) Then NumTotalRN(3) = True
-    Call ResRef
+    If NumTotalS(0) = 10 And NumTotalR(0) And Not NumTotalRN(1) Then NumTotalRN(1) = True: updateR = True
+    If NumTotalS(1) = 10 And NumTotalR(1) And Not NumTotalRN(2) Then NumTotalRN(2) = True: updateR = True
+    If NumTotalS(2) = 10 And NumTotalR(2) And Not NumTotalRN(3) Then NumTotalRN(3) = True: updateR = True
+    If NumTotalR(4) Then ClickP = ClickP + 1: updateR = True
+    If updateR Then Call ResRef
 End Sub

@@ -13,6 +13,15 @@ Begin VB.Form Main
    ScaleHeight     =   6255
    ScaleWidth      =   6630
    StartUpPosition =   3  '窗口缺省
+   Begin VB.CommandButton CopyE 
+      Caption         =   "复制记录"
+      Height          =   375
+      Left            =   1320
+      TabIndex        =   12
+      ToolTipText     =   "将大事录复制到剪贴板"
+      Top             =   1800
+      Width           =   1095
+   End
    Begin VB.CommandButton Research 
       Caption         =   "研究"
       Height          =   375
@@ -22,16 +31,16 @@ Begin VB.Form Main
       Width           =   1095
    End
    Begin MSComDlg.CommonDialog Common 
-      Left            =   1800
-      Top             =   1800
+      Left            =   1560
+      Top             =   1200
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
    End
    Begin VB.Timer Timer1 
       Interval        =   1000
-      Left            =   1320
-      Top             =   1800
+      Left            =   960
+      Top             =   1200
    End
    Begin VB.CommandButton Command1 
       Caption         =   "商店"
@@ -155,6 +164,12 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Sub CopyE_Click()
+    Clipboard.Clear
+    Clipboard.SetText EventS
+    MsgBox "已复制成功!", 0, "复制成功"
+End Sub
+
 Private Sub Form_Load()
     On Error Resume Next
     Call Mainload
@@ -187,6 +202,10 @@ End Sub
 
 Private Sub Command1_Click()
     ShopF.Show
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+End
 End Sub
 
 Private Sub MnuLoad_Click()
