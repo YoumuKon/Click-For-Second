@@ -5,7 +5,7 @@ Public ItemV(NumTopS) As Long, ClickP As Integer
 Public ResV(NumTopR) As Integer, ResT(NumTopR) As Integer, ResTI(1, NumTopR)
 Public NumTotalS(NumTopS) As Integer, sper&, chg%, NumTotalR(NumTopR) As Boolean, NameR(NumTopR) As String
 Public NumTotalRN(NumTopR) As Boolean
-Public Sub Mainload()
+Public Sub Mainload() '常数表
     '研究名
     NameR(0) = "黑框眼镜制造"
     NameR(1) = "《他改变了中国》出版"
@@ -57,21 +57,36 @@ Public Sub ResRef()
     Next I
 End Sub
 
+Public Sub ResShop()
+    For I = 0 To NumTopS
+        ShopF.NumI(I) = "目前共" & str(NumTotalS(I)) & "个"
+    Next I
+    If NumTotalR(0) Then ShopF.BuyI(0).Enabled = True
+    If NumTotalR(1) Then ShopF.BuyI(1).Enabled = True
+    If NumTotalR(2) Then ShopF.BuyI(2).Enabled = True
+    If NumTotalR(3) Then ShopF.BuyI(3).Enabled = True
+End Sub
+
 Public Sub saveF()
-Dim ResHex As String
+Dim ResHex As String, ISa As Integer
     ResHex = ResSave()
     Main.Common.DefaultExt = "savesecond"
     Main.Common.ShowSave
     If Main.Common.FileName = "" Then Exit Sub Else
     Open Main.Common.FileName For Output As #1
-    Print #1, Main.User & "|" & str(Ts) & "|" _
-    & NumTotalS(0) & "|" & NumTotalS(1) & "|" & NumTotalS(2) & "|" & NumTotalS(3) & "|" _
-    & ClickP & "|" & ResHex
+    Print #1, Main.User & "|" & Ts & "|";
+    For ISa = 0 To NumTopS
+        Print #1, NumTotalS(ISa) & "|";
+    Next ISa
+    Print #1, ClickP & "|" & ResHex;
+    For ISa = 0 To NumTopR
+        Print #1, ResTI(1, ISa) & "|";
+    Next ISa
     Close #1
 End Sub
 
 Public Sub loadf()
-Dim str As String, stuffstr, bitL As String
+Dim str As String, stuffstr, bitR, IL As Integer, ResTIstuff(NumTopR) As Boolean
     Main.Common.ShowOpen
     If Main.Common.FileName = "" Then Exit Sub Else
     Open Main.Common.FileName For Input As #1
@@ -79,15 +94,21 @@ Dim str As String, stuffstr, bitL As String
     Close #1
     '载入文档处理
     stuffstr = Split(str, "|", -1)
-    '0-用户名 1-总共秒数 2~(4+2)-物品数量 4+3-点击增加量 4+4-十六进制研究数
+    '0-用户名 1-总共秒数 2~(4+2)-物品数量 4+3-点击增加量
+    '4+4-十六进制研究数(研究情况+研究中) (4+5)~(4+5+5)-研究剩余
     Main.User = stuffstr(0)
     Ts = stuffstr(1)
-    For I2 = 0 To NumTopS
-    NumTotalS(I2) = stuffstr(I2 + 2)
-    Next I2
+    For IL = 0 To NumTopS
+        NumTotalS(IL) = stuffstr(IL + 2)
+    Next IL
     ClickP = stuffstr(NumTopS + 3)
-    bitR = stuffstr(NumTopS + 4)
-    Call bitBoo(hexBit(bitR), NumTotalR())
+    bitR = Split(stuffstr(NumTopS + 4), "+", 2)
+    Call bitBoo(hexBit(bitR(0)), NumTotalR())
+    Call bitBoo(hexBit(bitR(1)), ResTIstuff())
+    For IL = 0 To NumTopR
+        ResTI(0, IL) = ResTIstuff(IL)
+        ResTI(1, IL) = stuffstr(IL + 5)
+    Next IL
     Call Refe
 End Sub
 

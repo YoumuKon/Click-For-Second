@@ -113,11 +113,6 @@ Private Sub BuyI_Click(Index As Integer)
 End Sub
 
 Private Sub Form_Load()
-    For I = 0 To NumTopS
-        NumI(I) = "目前共" & str(NumTotalS(I)) & "个"
-    Next I
-    For I = 0 To NumTopS
-        If NumTotalR(I) Then BuyI(I).Enabled = True
-    Next I
+    Call ResShop
 End Sub
 

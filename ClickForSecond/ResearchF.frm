@@ -128,9 +128,9 @@ Dim resN As Integer, RV&
         MsgBox "请选择研究项目!", vbCritical, "未选择研究"
         Else: resN = ResNum(Resable.List(Resable.ListIndex)): RV = ResV(resN)
         If BuyCheck(RV, Ts) Then
-            ResTI(1, resN) = ResT(resN)
             NumTotalRN(resN) = False
             ResTI(0, resN) = True
+            ResTI(1, resN) = ResT(resN)
             Resing.AddItem Resable.List(Resable.ListIndex)
             Resable.RemoveItem Resable.ListIndex
             Else: MsgBox "秒数不够!", 16, "秒数不够"
@@ -141,7 +141,7 @@ End Sub
 Private Sub Timer1_Timer()
 Dim updateR As Boolean, Resin As Integer
     If Resing.ListCount <> 0 Then
-        For TRes = 0 To Resing.ListCount - 1
+        For TRes = Resing.ListCount - 1 To 0 Step -1
             Resin = -1
             Do While Resin = -1
                 Resin = ResNum(Resing.List(TRes))
@@ -151,13 +151,14 @@ Dim updateR As Boolean, Resin As Integer
                 NumTotalR(Resin) = True
                 Resed.AddItem NameR(Resin)
                 Resing.RemoveItem TRes
+                Call ResShop
                 Else: ResTI(1, Resin) = ResTI(1, Resin) - 1
             End If
         Next TRes
     End If
-    If NumTotalS(0) = 10 And NumTotalR(0) And Not NumTotalRN(1) Then NumTotalRN(1) = True: updateR = True
-    If NumTotalS(1) = 10 And NumTotalR(1) And Not NumTotalRN(2) Then NumTotalRN(2) = True: updateR = True
-    If NumTotalS(2) = 10 And NumTotalR(2) And Not NumTotalRN(3) Then NumTotalRN(3) = True: updateR = True
-    If NumTotalR(4) Then ClickP = ClickP + 1: updateR = True
+    If NumTotalS(0) = 10 And NumTotalR(0) And Not (NumTotalRN(1) Or ResTI(0, 1) Or NumTotalR(1)) Then NumTotalRN(1) = True: updateR = True
+    If NumTotalS(1) = 10 And NumTotalR(1) And Not (NumTotalRN(2) Or ResTI(0, 2) Or NumTotalR(2)) Then NumTotalRN(2) = True: updateR = True
+    If NumTotalS(2) = 10 And NumTotalR(2) And Not (NumTotalRN(3) Or ResTI(0, 3) Or NumTotalR(3)) Then NumTotalRN(3) = True: updateR = True
+    If NumTotalR(4) Then ClickP = ClickP + 1
     If updateR Then Call ResRef
 End Sub

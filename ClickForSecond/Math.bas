@@ -9,7 +9,7 @@ Public Function BuyCheck(Value&, money#) As Boolean
     End If
 End Function
 
-Public Function bitHex(str$) As String
+Public Function bitHex(ByVal str$) As String
 Dim bit As String
     Do While Not Len(str) = 0
         bit = Left(str, 4)
@@ -36,7 +36,7 @@ Dim bit As String
     bitHex = "&H" & bitHex
 End Function
 
-Public Function hexBit(str$) As String
+Public Function hexBit(ByVal str$) As String
 Dim hex As String
     str = Mid(str, 2)
     Do While Not Len(str) = 0
@@ -65,16 +65,21 @@ Dim hex As String
 End Function
 
 Public Function ResSave() As String
-Dim Boo(NumTopR) As Integer
+Dim Boo(NumTopR) As Integer, stuff As Integer
     ResSave = ""
+    stuff = ""
     For I = 0 To NumTopR
         Boo(I) = -NumTotalR(I)
         ResSave = ResSave & str(Boo(I))
     Next I
-    ResSave = bitHex(ResSave)
+    For I = 0 To NumTopR
+        Boo(I) = -ResTI(0, I)
+        stuff = ResSave & str(Boo(I))
+    Next I
+    ResSave = bitHex(ResSave) & "+" & bitHex(stuff)
 End Function
 
-Public Sub bitBoo(str$, arrb())
+Public Sub bitBoo(str$, arrb() As Boolean)
     For I = 0 To NumTopR
         If Mid(str, I, 1) = "1" Then
             arrb(I) = True
