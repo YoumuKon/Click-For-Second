@@ -166,7 +166,7 @@ Option Explicit
 
 Private Sub CopyE_Click()
     Clipboard.Clear
-    Clipboard.SetText EventS
+    Clipboard.SetText "当前日期:" & Date & vbCrLf & EventS
     MsgBox "已复制成功!", 0, "复制成功"
 End Sub
 
