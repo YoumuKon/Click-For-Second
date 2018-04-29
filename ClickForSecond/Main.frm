@@ -16,9 +16,9 @@ Begin VB.Form Main
    Begin VB.CommandButton Setting 
       Caption         =   "设置"
       Height          =   375
-      Left            =   3960
+      Left            =   5400
       TabIndex        =   13
-      Top             =   4440
+      Top             =   4920
       Width           =   1215
    End
    Begin VB.CommandButton CopyE 
@@ -33,9 +33,9 @@ Begin VB.Form Main
    Begin VB.CommandButton Research 
       Caption         =   "研究"
       Height          =   375
-      Left            =   3960
+      Left            =   6720
       TabIndex        =   11
-      Top             =   3960
+      Top             =   4440
       Width           =   1215
    End
    Begin MSComDlg.CommonDialog Common 
@@ -53,9 +53,9 @@ Begin VB.Form Main
    Begin VB.CommandButton Command1 
       Caption         =   "商店"
       Height          =   375
-      Left            =   3960
+      Left            =   5400
       TabIndex        =   9
-      Top             =   3480
+      Top             =   4440
       Width           =   1215
    End
    Begin VB.CommandButton Clear 
@@ -85,10 +85,10 @@ Begin VB.Form Main
       ScrollBars      =   2  'Vertical
       TabIndex        =   0
       Top             =   3480
-      Width           =   3735
+      Width           =   5175
    End
    Begin VB.Label Persec 
-      Caption         =   "现在1s最少能续: 0s"
+      Caption         =   "现在1秒最少能续: 0s"
       Height          =   255
       Left            =   5400
       TabIndex        =   10
@@ -140,7 +140,7 @@ Begin VB.Form Main
       Width           =   2295
    End
    Begin VB.Label Label2 
-      Caption         =   "到目前为止您共奉献了："
+      Caption         =   "您的时间法阵储存的秒数为："
       Height          =   255
       Left            =   5400
       TabIndex        =   3
@@ -157,11 +157,17 @@ Begin VB.Form Main
    End
    Begin VB.Menu Menu 
       Caption         =   "菜单"
-      Begin VB.Menu MnuSave 
-         Caption         =   "保存存档(S&)"
+      Begin VB.Menu MnuSaveData 
+         Caption         =   "存档"
+         Begin VB.Menu MnuSave 
+            Caption         =   "保存存档(S&)"
+         End
+         Begin VB.Menu MnuLoad 
+            Caption         =   "载入存档(L&)"
+         End
       End
-      Begin VB.Menu MnuLoad 
-         Caption         =   "载入存档(L&)"
+      Begin VB.Menu MnuAbout 
+         Caption         =   "关于(A&)"
       End
    End
 End
@@ -186,7 +192,7 @@ Private Sub Form_Load()
     EventS = ""
     chg = 0
     Total = 0
-    For I = 0 To NumTopS
+    For I = 0 To NumTopI
         ShopF.BuyI(I).Enabled = False
         NumTotalS(I) = 0
         ItemPS(I) = 1
@@ -219,6 +225,10 @@ End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
 End
+End Sub
+
+Private Sub MnuAbout_Click()
+    MsgBox "挂机游戏ClickForSecond   By YoumuKon" & Chr(13) & "版本号: " & CFSVersion
 End Sub
 
 Private Sub MnuLoad_Click()
@@ -258,6 +268,6 @@ End Sub
 Private Sub WorkPlace_Click()
     Ts = Ts + ClickP
     Total = str(Ts)
-    If ClickEB Then UpdEve User & "为事业贡献了" & ClickP & "s"
+    If ClickEB Then UpdEve User & "贡献了" & ClickP & "s"
 End Sub
 

@@ -1,11 +1,13 @@
 Attribute VB_Name = "Public"
 Option Explicit
-Public Const NumTopS = 7 - 1, NumTopR = 16 - 1
-Public updCed(NumTopR) As Boolean, updPSed(NumTopS, 1) As Boolean
-Public ItemV(NumTopS) As Double, ClickP As Integer, NameI(NumTopS) As String, ItemPS(NumTopS) As Double
+Public Const CFSVersion = "Beta1.1"
+Public Const NumTopI = 7 - 1, NumTopR = 16 - 1, NumTopS = 2 - 1
+Public updCed(NumTopR) As Boolean, updPSed(NumTopI, 1) As Boolean
+Public ItemV(NumTopI) As Double, ClickP As Integer, NameI(NumTopI) As String, ItemPS(NumTopI) As Double
 Public ResV(NumTopR) As Double, ResT(NumTopR) As Integer, ResTI(1, NumTopR)
-Public NumTotalS(NumTopS) As Integer, sper As Double, chg%, NumTotalR(NumTopR) As Boolean, NameR(NumTopR) As String
+Public NumTotalS(NumTopI) As Double, sper As Double, chg%, NumTotalR(NumTopR) As Boolean, NameR(NumTopR) As String
 Public NumTotalRN(NumTopR) As Boolean
+Public NumSkill(NumTopS) As String
 Public Sub Mainconst() '常数表
     '商品费用
     ItemV(0) = 10
@@ -74,13 +76,15 @@ Public Sub Mainconst() '常数表
     ResT(13) = 1200
     ResT(14) = 3600
     ResT(15) = 325
+    '技能名
+    NumSkill(0) = "喝枸杞茶"
 End Sub
 
 Public Sub Refe()
 Dim IR%
-    Main.Total = str(Ts)
-    For IR = 0 To NumTopS
-        ShopF.NumI(IR) = "目前共" & str(NumTotalS(IR)) & "个"
+    Main.Total = Ts
+    For IR = 0 To NumTopI
+        ShopF.NumI(IR) = "目前共" & NumTotalS(IR) & "个"
     Next IR
     Call NumPer
 End Sub
@@ -90,7 +94,8 @@ Public Sub NumPer() '每秒增加量=对每个商品的(商品增益*商品效率)求和
     sper = sper + NumTotalS(1) * 2 * ItemPS(1)
     sper = sper + NumTotalS(2) * 5 * ItemPS(2)
     sper = sper + NumTotalS(3) * 10 * ItemPS(3)
-    sper = sper + NumTotalS(3) * 20 * ItemPS(4)
+    sper = sper + NumTotalS(4) * 20 * ItemPS(4)
+    sper = sper + NumTotalS(5) * 50 * ItemPS(5)
     Main.Persec = "现在1s最少能续:" & str(sper) & "s"
 End Sub
 
@@ -117,9 +122,9 @@ Dim IRS%
     NameI(4) = "复合材料赛艇 " & ItemV(4) & "s": ItemPS(4) = 1.5: updPSed(4, 0) = True
     If NumTotalR(5) And NumTotalR(11) And Not updPSed(5, 0) Then _
     NameI(5) = "《Aloha 'Oe》VCD版 " & ItemV(5) & "s": ItemPS(5) = 1.5: updPSed(5, 0) = True
-    For IRS = 0 To NumTopS
+    For IRS = 0 To NumTopI
         ShopF.BuyI(IRS).Caption = NameI(IRS)
-        ShopF.NumI(IRS) = "目前共" & str(NumTotalS(IRS)) & "个"
+        ShopF.NumI(IRS) = "目前共" & NumTotalS(IRS) & "个"
     Next IRS
 End Sub
 
@@ -131,17 +136,18 @@ Dim ResHex As String, ISa As Integer
     If Main.Common.FileName = "" Then Exit Sub Else
     Open Main.Common.FileName For Output As #1
     Print #1, Main.User & "|" & Ts & "|";
-    For ISa = 0 To NumTopS
+    For ISa = 0 To NumTopI
         Print #1, NumTotalS(ISa) & "|";
     Next ISa
     Print #1, ClickP & "|" & ResHex & "|";
     For ISa = 0 To NumTopR
         Print #1, ResTI(1, ISa) & "|";
     Next ISa
-    For ISa = 0 To NumTopS
+    For ISa = 0 To NumTopI
         Print #1, ItemPS(ISa) & "|";
     Next ISa
     Close #1
+    UpdEve "已保存至'" & Main.Common.FileName & "'"
 End Sub
 
 Public Sub loadf()
@@ -153,22 +159,22 @@ Dim str As String, stuffstr, bitR, IL As Integer, ResTIstuff(NumTopR) As Boolean
     Close #1
     '载入文档处理
     stuffstr = Split(str, "|", -1)
-    '0-用户名 1-总共秒数 2~(2+NumTopS)-物品数量 3+NumTopS-点击增加量
-    '4+NumTopS-十六进制研究数(研究完+研究中+可研究) (5+NumTopS)~(5+NumTopS+NumTopR)-研究剩余
+    '0-用户名 1-总共秒数 2~(2+NumTopI)-物品数量 3+NumTopI-点击增加量
+    '4+NumTopI-十六进制研究数(研究完+研究中+可研究) (5+NumTopI)~(5+NumTopI+NumTopR)-研究剩余
     Main.User = stuffstr(0)
     Ts = stuffstr(1)
-    For IL = 0 To NumTopS
+    For IL = 0 To NumTopI
         NumTotalS(IL) = stuffstr(IL + 2)
         If NumTotalR(IL + 5) Then updPSed(IL, 1) = True
     Next IL
-    ClickP = stuffstr(NumTopS + 3)
-    bitR = Split(stuffstr(NumTopS + 4), "+", 3)
+    ClickP = stuffstr(NumTopI + 3)
+    bitR = Split(stuffstr(NumTopI + 4), "+", 3)
     Call bitBoo(hexBit(bitR(0)), NumTotalR())
     Call bitBoo(hexBit(bitR(1)), ResTIstuff())
     Call bitBoo(hexBit(bitR(2)), NumTotalRN())
     For IL = 0 To NumTopR
         ResTI(0, IL) = ResTIstuff(IL)
-        ResTI(1, IL) = stuffstr(IL + NumTopS + 5)
+        ResTI(1, IL) = stuffstr(IL + NumTopI + 5)
         If NumTotalR(IL) Then updCed(IL) = True
     Next IL
     If NumTotalR(10) Then Call showWP(0)
@@ -176,6 +182,8 @@ Dim str As String, stuffstr, bitR, IL As Integer, ResTIstuff(NumTopR) As Boolean
     If NumTotalR(12) Then Call showWP(2)
     Call Refe
     Call ResRef
+    Call ResShop
+    UpdEve "存档'" & Main.Common.FileName & "'已加载"
 End Sub
 
 Public Sub UpdEve(str$)

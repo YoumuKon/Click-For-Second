@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form ResearchF 
    BorderStyle     =   1  'Fixed Single
-   Caption         =   "时间研究中心"
+   Caption         =   "时间研究室"
    ClientHeight    =   5865
    ClientLeft      =   10020
    ClientTop       =   1785
@@ -186,21 +186,11 @@ Dim Resin As Integer, TRes%
 End Sub
 
 Private Sub USkill0_Click()
-Dim ReS0%, TS0%
-    If MsgBox("技能需要消耗1枸杞茶" & Chr(13) & "现在有" & NumTotalS(6) & "个枸杞茶" & Chr(13) & "确定要使用技能吗?", _
-    vbYesNo, "喝枸杞茶") = vbYes Then
-        If BuyCheck(ItemV(6), Ts) Then
-            NumTotalS(6) = NumTotalS(6) - 1
-            For TS0 = Resing.ListCount - 1 To 0 Step -1
-                ReS0 = -1
-                Do While ReS0 = -1
-                    ReS0 = ResNum(Resing.List(TS0))
-                Loop
-                If ResTI(1, ReS0) > 0 Then ResTI(1, ReS0) = ResTI(1, ReS0) - 60
-                If ResTI(1, ReS0) < 0 Then ResTI(1, ReS0) = 0
-            Next TS0
-            MsgBox "技能使用成功!", 0, "使用成功"
-            Else: MsgBox "物品数不够!", 16, "使用失败"
-        End If
+Dim num
+    num = InputBox("请输入技能使用数量", "喝枸杞茶")
+    If num <> "" Then
+        If MsgBox("技能需要消耗" & num & "个枸杞茶" & Chr(13) & "现在有" & NumTotalS(6) & "个枸杞茶" & Chr(13) & "确定要使用技能吗?", _
+        vbYesNo, "喝枸杞茶") = vbYes Then Call RunSkill(0, num)
+        Else: MsgBox "请输入物品数!", 16, "使用失败"
     End If
 End Sub
