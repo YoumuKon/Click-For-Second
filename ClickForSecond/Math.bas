@@ -11,6 +11,9 @@ End Function
 
 Public Function bitHex(ByVal str$) As String
 Dim bit As String
+    Do While Len(str) Mod 4 <> 0
+        str = str & "0"
+    Loop
     Do While Not Len(str) = 0
         bit = Left(str, 4)
         Select Case bit
@@ -31,16 +34,16 @@ Dim bit As String
             Case "1110": bitHex = bitHex & "E"
             Case "1111": bitHex = bitHex & "F"
         End Select
-        str = Mid(str, 4)
+        str = Mid(str, 5)
     Loop
     bitHex = "&H" & bitHex
 End Function
 
 Public Function hexBit(ByVal str$) As String
 Dim hex As String
-    str = Mid(str, 2)
+    str = Mid(str, 3)
     Do While Not Len(str) = 0
-        hex = Left(str, 4)
+        hex = Left(str, 1)
         Select Case hex
             Case "0": hexBit = hexBit & "0000"
             Case "1": hexBit = hexBit & "0001"
@@ -59,9 +62,8 @@ Dim hex As String
             Case "E": hexBit = hexBit & "1110"
             Case "F": hexBit = hexBit & "1111"
         End Select
-        str = Mid(str, 4)
+        str = Mid(str, 2)
     Loop
-    hexBit = hexBit
 End Function
 
 Public Function ResSave() As String
@@ -70,20 +72,20 @@ Dim Boo(NumTopR) As Integer, stuff As String, IRS%
     stuff = ""
     For IRS = 0 To NumTopR
         Boo(IRS) = -NumTotalR(IRS)
-        ResSave = ResSave & str(Boo(IRS))
+        ResSave = ResSave & Boo(IRS)
     Next IRS
     For IRS = 0 To NumTopR
         Boo(IRS) = -ResTI(0, IRS)
-        stuff = ResSave & str(Boo(IRS))
+        stuff = stuff & Boo(IRS)
     Next IRS
     ResSave = bitHex(ResSave) & "+" & bitHex(stuff)
 End Function
 
 Public Sub bitBoo(str$, arrb() As Boolean)
-    For I = 0 To NumTopR
+    For I = 1 To NumTopR + 1
         If Mid(str, I, 1) = "1" Then
-            arrb(I) = True
-            Else: arrb(I) = False
+            arrb(I - 1) = True
+            Else: arrb(I - 1) = False
         End If
     Next I
 End Sub
