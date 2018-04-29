@@ -80,10 +80,13 @@ Begin VB.Form ResearchF
       Top             =   120
       Width           =   1935
    End
-   Begin VB.Menu MunR 
-      Caption         =   "菜单"
-      Begin VB.Menu MnuNow 
-         Caption         =   "现在的效率"
+   Begin VB.Menu MnuUser 
+      Caption         =   "用户菜单"
+      Begin VB.Menu MnuUskill 
+         Caption         =   "技能"
+         Begin VB.Menu USkill0 
+            Caption         =   "喝枸杞茶(1&)"
+         End
       End
    End
 End
@@ -93,9 +96,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-Private TRes%
+
 Private Sub Form_Load()
     Call ResRef
+End Sub
+
+Private Sub Resing_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If Button = 2 Then PopupMenu MnuUser
 End Sub
 
 Private Sub Resable_Click()
@@ -138,7 +145,7 @@ Dim resN As Integer, RV As Double
 End Sub
 
 Private Sub Timer1_Timer()
-Dim Resin As Integer
+Dim Resin As Integer, TRes%
     If Resing.ListCount <> 0 Then
         For TRes = Resing.ListCount - 1 To 0 Step -1
             Resin = -1
@@ -155,17 +162,20 @@ Dim Resin As Integer
                     '添加新研究时直接粘贴
                     Case 0: UpdEve "现在已经可以购买黑框眼镜了!"
                     Case 1: UpdEve "现在已经可以购买《他改变了中国》了!"
-                    Case 2: UpdEve "现在已经可以购买赛艇了!"
-                    Case 3: UpdEve "现在已经可以购买三手表套装了!"
-                    Case 4: UpdEve "现在已经可以购买鸭嘴笔套装了!"
-                    Case 5: UpdEve "黑框眼镜已升级为意大利窄边眼镜!"
-                    Case 6: UpdEve "《他改变了中国》已升级为《江泽民文选》!"
-                    Case 7: UpdEve "普通材料赛艇已升级为复合材料赛艇!"
+                    Case 2: UpdEve "现在已经可以购买三手表套装了!"
+                    Case 3: UpdEve "现在已经可以购买普通鸭嘴笔了!"
+                    Case 4: UpdEve "现在已经可以购买赛艇了!"
+                    Case 5: UpdEve "现在已经可以购买《Aloha 'Oe》黑胶唱片了!"
+                    Case 6: UpdEve "黑框眼镜已升级为意大利窄边眼镜!"
+                    Case 7: UpdEve "《他改变了中国》已升级为《江泽民文选》!"
                     Case 8: UpdEve "机械手表套装已升级为电子手表套装!"
-                    Case 9: UpdEve "鸭嘴笔套装已升级为高效鸭嘴笔!"
-                    Case 10: UpdEve "工作区房屋已建造完毕!"
-                    Case 11: UpdEve "工作区员工宿舍已建造完毕!"
-                    Case 12: UpdEve "工作区广场已建造完毕!"
+                    Case 9: UpdEve "普通鸭嘴笔已升级为高效鸭嘴笔!"
+                    Case 10: UpdEve "普通材料赛艇已升级为复合材料赛艇!"
+                    Case 11: UpdEve "黑胶唱片已升级为VCD!"
+                    Case 12: UpdEve "工作区房屋已建造完毕!"
+                    Case 13: UpdEve "工作区员工宿舍已建造完毕!"
+                    Case 14: UpdEve "工作区广场已建造完毕!"
+                    Case 15: UpdEve "现在已经可以购买枸杞茶了!"
                 End Select
                 Call ResShop
                 ElseIf ResTI(1, Resin) > 0 Then ResTI(1, Resin) = ResTI(1, Resin) - 1
@@ -173,4 +183,24 @@ Dim Resin As Integer
         Next TRes
     End If
     Call CheckRes
+End Sub
+
+Private Sub USkill0_Click()
+Dim ReS0%, TS0%
+    If MsgBox("技能需要消耗1枸杞茶" & Chr(13) & "现在有" & NumTotalS(6) & "个枸杞茶" & Chr(13) & "确定要使用技能吗?", _
+    vbYesNo, "喝枸杞茶") = vbYes Then
+        If BuyCheck(ItemV(6), Ts) Then
+            NumTotalS(6) = NumTotalS(6) - 1
+            For TS0 = Resing.ListCount - 1 To 0 Step -1
+                ReS0 = -1
+                Do While ReS0 = -1
+                    ReS0 = ResNum(Resing.List(TS0))
+                Loop
+                If ResTI(1, ReS0) > 0 Then ResTI(1, ReS0) = ResTI(1, ReS0) - 60
+                If ResTI(1, ReS0) < 0 Then ResTI(1, ReS0) = 0
+            Next TS0
+            MsgBox "技能使用成功!", 0, "使用成功"
+            Else: MsgBox "秒数不够!", 16, "秒数不够"
+        End If
+    End If
 End Sub

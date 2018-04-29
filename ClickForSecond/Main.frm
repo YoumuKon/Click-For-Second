@@ -13,6 +13,14 @@ Begin VB.Form Main
    ScaleHeight     =   8385
    ScaleWidth      =   8055
    StartUpPosition =   3  '窗口缺省
+   Begin VB.CommandButton Setting 
+      Caption         =   "设置"
+      Height          =   375
+      Left            =   3960
+      TabIndex        =   13
+      Top             =   4440
+      Width           =   1215
+   End
    Begin VB.CommandButton CopyE 
       Caption         =   "复制记录"
       Height          =   375
@@ -27,7 +35,7 @@ Begin VB.Form Main
       Height          =   375
       Left            =   3960
       TabIndex        =   11
-      Top             =   3840
+      Top             =   3960
       Width           =   1215
    End
    Begin MSComDlg.CommonDialog Common 
@@ -47,7 +55,7 @@ Begin VB.Form Main
       Height          =   375
       Left            =   3960
       TabIndex        =   9
-      Top             =   3360
+      Top             =   3480
       Width           =   1215
    End
    Begin VB.CommandButton Clear 
@@ -66,7 +74,7 @@ Begin VB.Form Main
       TabIndex        =   2
       Text            =   "Youmu"
       ToolTipText     =   "修改名字会导致记录重置"
-      Top             =   3000
+      Top             =   3120
       Width           =   2535
    End
    Begin VB.TextBox EventS 
@@ -136,7 +144,7 @@ Begin VB.Form Main
       Height          =   255
       Left            =   5400
       TabIndex        =   3
-      Top             =   3360
+      Top             =   3480
       Width           =   2535
    End
    Begin VB.Label Label1 
@@ -144,7 +152,7 @@ Begin VB.Form Main
       Height          =   255
       Left            =   3840
       TabIndex        =   1
-      Top             =   3000
+      Top             =   3120
       Width           =   1695
    End
    Begin VB.Menu Menu 
@@ -163,7 +171,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-
+Public ClickEB As Boolean
 Private Sub CopyE_Click()
     Clipboard.Clear
     Clipboard.SetText "当前日期:" & Date & vbCrLf & EventS
@@ -172,8 +180,8 @@ End Sub
 
 Private Sub Form_Load()
     On Error Resume Next
-    Call Mainload
-    Common.Filter = "保存文档(*.savesecond)|*.savesecond|全部文件(*.*)|*.*"
+    Call Mainconst
+    '初始化
     Ts = 0
     EventS = ""
     chg = 0
@@ -188,11 +196,15 @@ Private Sub Form_Load()
         ResTI(0, I) = False
         NumTotalRN(I) = False
     Next I
-    ResearchF.Resable.AddItem NameR(0)
-    ResearchF.Resable.AddItem NameR(10)
-    NumTotalRN(0) = True
-    NumTotalRN(10) = True
     ClickP = 1
+    '默认设置
+    ResearchF.Resable.AddItem NameR(0)
+    ResearchF.Resable.AddItem NameR(12)
+    NumTotalRN(0) = True
+    NumTotalRN(12) = True
+    ClickEB = True
+    Common.Filter = "保存文档(*.savesecond)|*.savesecond|全部文件(*.*)|*.*"
+    Call showWP(-1)
     Call NumPer
     Call ResRef
 End Sub
@@ -221,6 +233,10 @@ Private Sub Research_Click()
     ResearchF.Show
 End Sub
 
+Private Sub Setting_Click()
+    SettingF.Show
+End Sub
+
 Private Sub Timer1_Timer()
     sper = 0
     Call NumPer
@@ -242,6 +258,6 @@ End Sub
 Private Sub WorkPlace_Click()
     Ts = Ts + ClickP
     Total = str(Ts)
-    UpdEve User & "为事业贡献了" & ClickP & "s"
+    If ClickEB Then UpdEve User & "为事业贡献了" & ClickP & "s"
 End Sub
 
