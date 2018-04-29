@@ -162,7 +162,7 @@ Dim Resin As Integer, TRes%
                     '添加新研究时直接粘贴
                     Case 0: UpdEve "现在已经可以购买黑框眼镜了!"
                     Case 1: UpdEve "现在已经可以购买《他改变了中国》了!"
-                    Case 2: UpdEve "现在已经可以购买三手表套装了!"
+                    Case 2: UpdEve "现在已经可以购买机械手表套装了!"
                     Case 3: UpdEve "现在已经可以购买普通鸭嘴笔了!"
                     Case 4: UpdEve "现在已经可以购买赛艇了!"
                     Case 5: UpdEve "现在已经可以购买《Aloha 'Oe》黑胶唱片了!"
@@ -200,7 +200,7 @@ Dim ReS0%, TS0%
                 If ResTI(1, ReS0) < 0 Then ResTI(1, ReS0) = 0
             Next TS0
             MsgBox "技能使用成功!", 0, "使用成功"
-            Else: MsgBox "秒数不够!", 16, "秒数不够"
+            Else: MsgBox "物品数不够!", 16, "使用失败"
         End If
     End If
 End Sub
