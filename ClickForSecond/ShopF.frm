@@ -3,15 +3,14 @@ Begin VB.Form ShopF
    BorderStyle     =   1  'Fixed Single
    Caption         =   "小商店"
    ClientHeight    =   3030
-   ClientLeft      =   45
-   ClientTop       =   375
+   ClientLeft      =   10200
+   ClientTop       =   7950
    ClientWidth     =   5415
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3030
    ScaleWidth      =   5415
-   StartUpPosition =   3  '窗口缺省
    Begin VB.CommandButton BuyI 
       Caption         =   "三手表套装 90s"
       Enabled         =   0   'False

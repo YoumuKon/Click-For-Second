@@ -1,7 +1,7 @@
 Attribute VB_Name = "Math"
 Option Explicit
-Public IT%, Ts#, I2%, TI%, I%
-Public Function BuyCheck(Value&, money#) As Boolean
+Public Ts#, I%
+Public Function BuyCheck(Value As Double, money As Double) As Boolean
     BuyCheck = False
     If money >= Value Then
         money = money - Value
@@ -65,17 +65,17 @@ Dim hex As String
 End Function
 
 Public Function ResSave() As String
-Dim Boo(NumTopR) As Integer, stuff As Integer
+Dim Boo(NumTopR) As Integer, stuff As String, IRS%
     ResSave = ""
     stuff = ""
-    For I = 0 To NumTopR
-        Boo(I) = -NumTotalR(I)
-        ResSave = ResSave & str(Boo(I))
-    Next I
-    For I = 0 To NumTopR
-        Boo(I) = -ResTI(0, I)
-        stuff = ResSave & str(Boo(I))
-    Next I
+    For IRS = 0 To NumTopR
+        Boo(IRS) = -NumTotalR(IRS)
+        ResSave = ResSave & str(Boo(IRS))
+    Next IRS
+    For IRS = 0 To NumTopR
+        Boo(IRS) = -ResTI(0, IRS)
+        stuff = ResSave & str(Boo(IRS))
+    Next IRS
     ResSave = bitHex(ResSave) & "+" & bitHex(stuff)
 End Function
 

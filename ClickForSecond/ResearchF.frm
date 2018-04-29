@@ -3,15 +3,14 @@ Begin VB.Form ResearchF
    BorderStyle     =   1  'Fixed Single
    Caption         =   "时间研究中心"
    ClientHeight    =   5865
-   ClientLeft      =   150
-   ClientTop       =   780
+   ClientLeft      =   10020
+   ClientTop       =   1785
    ClientWidth     =   6225
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5865
    ScaleWidth      =   6225
-   StartUpPosition =   3  '窗口缺省
    Begin VB.ListBox Resed 
       Height          =   5280
       Left            =   4200
@@ -123,7 +122,7 @@ End Sub
 
 
 Private Sub ResStart_Click()
-Dim resN As Integer, RV&
+Dim resN As Integer, RV As Double
     If Resable.ListIndex = -1 Then
         MsgBox "请选择研究项目!", vbCritical, "未选择研究"
         Else: resN = ResNum(Resable.List(Resable.ListIndex)): RV = ResV(resN)
@@ -152,18 +151,20 @@ Dim updateR As Boolean, Resin As Integer, updCed(1) As Boolean
                 Resed.AddItem NameR(Resin)
                 Resing.RemoveItem TRes
                 UpdEve NameR(Resin) & "研究成功!"
-                Select Case NameR(Resin)
-                    Case NameR(0): UpdEve "现在已经可以购买黑框眼镜了!"
-                    Case NameR(1): UpdEve "现在已经可以购买《他改变了中国》了!"
-                    Case NameR(2): UpdEve "现在已经可以购买赛艇了!"
-                    Case NameR(3): UpdEve "现在已经可以购买三手表套装了!"
-                    Case NameR(4): UpdEve "工作区已升级!现在效率为2"
+                Select Case Resin
+                    Case 0: UpdEve "现在已经可以购买黑框眼镜了!"
+                    Case 1: UpdEve "现在已经可以购买《他改变了中国》了!"
+                    Case 2: UpdEve "现在已经可以购买赛艇了!"
+                    Case 3: UpdEve "现在已经可以购买三手表套装了!"
+                    Case 4: UpdEve "工作区已升级!现在效率为2"
+                    Case 5: UpdEve "黑框眼镜已升级为意大利窄边眼镜!"
                 End Select
                 Call ResShop
                 Else: ResTI(1, Resin) = ResTI(1, Resin) - 1
             End If
         Next TRes
     End If
+    If NumTotalS(0) = 10 And NumTotalR(0) And Not (NumTotalRN(5) Or ResTI(0, 5) Or NumTotalR(5)) Then NumTotalRN(5) = True: updateR = True
     If NumTotalS(0) = 10 And NumTotalR(0) And Not (NumTotalRN(1) Or ResTI(0, 1) Or NumTotalR(1)) Then NumTotalRN(1) = True: updateR = True
     If NumTotalS(1) = 10 And NumTotalR(1) And Not (NumTotalRN(2) Or ResTI(0, 2) Or NumTotalR(2)) Then NumTotalRN(2) = True: updateR = True
     If NumTotalS(2) = 10 And NumTotalR(2) And Not (NumTotalRN(3) Or ResTI(0, 3) Or NumTotalR(3)) Then NumTotalRN(3) = True: updateR = True

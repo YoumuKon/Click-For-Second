@@ -180,6 +180,7 @@ Private Sub Form_Load()
     Total = 0
     For I = 0 To NumTopS
         NumTotalS(I) = 0
+        ItemPS(I) = 1
     Next I
     For I = 0 To NumTopR
         NumTotalR(I) = False
@@ -228,11 +229,12 @@ Private Sub Timer1_Timer()
 End Sub
 
 Private Sub User_Change()
+Dim IUC%
     Ts = 0
     Total = str(Ts)
-    For I = 0 To NumTopS
-        NumTotalS(I) = 0
-    Next I
+    For IUC = 0 To NumTopS
+        NumTotalS(IUC) = 0
+    Next IUC
     Call Refe
 End Sub
 
