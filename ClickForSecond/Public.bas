@@ -1,14 +1,14 @@
 Attribute VB_Name = "Public"
 Option Explicit
-Public Const CFSVersion = "Beta1.1"
-Public Const NumTopI = 7 - 1, NumTopR = 16 - 1, NumTopS = 2 - 1
-Public updCed(NumTopR) As Boolean, updPSed(NumTopI, 1) As Boolean
+Public Const CFSVersion = "Beta1.2"
+Public Const NumTopI = 7 - 1, NumTopR = 16 - 1, NumTopS = 2 - 1 '随物品种类/研究总数/技能总数变化
+Public updCed(NumTopR) As Boolean, updPSed(NumTopI, 2 - 1) As Boolean, Shotlist(1, 9)
 Public ItemV(NumTopI) As Double, ClickP As Integer, NameI(NumTopI) As String, ItemPS(NumTopI) As Double
 Public ResV(NumTopR) As Double, ResT(NumTopR) As Integer, ResTI(1, NumTopR)
 Public NumTotalS(NumTopI) As Double, sper As Double, chg%, NumTotalR(NumTopR) As Boolean, NameR(NumTopR) As String
 Public NumTotalRN(NumTopR) As Boolean
 Public NumSkill(NumTopS) As String
-Public Sub Mainconst() '常数表
+Public Sub Mainconst() '常数表(常量被注释表待定)
     '商品费用
     ItemV(0) = 10
     ItemV(1) = 20
@@ -18,13 +18,13 @@ Public Sub Mainconst() '常数表
     ItemV(5) = 480
     ItemV(6) = 59
     '商品名
-    NameI(0) = "黑框眼镜 " & ItemV(0) & "s"
-    NameI(1) = "《他改变了中国》 " & ItemV(1) & "s"
-    NameI(2) = "机械手表套装 " & ItemV(2) & "s"
-    NameI(3) = "普通鸭嘴笔 " & ItemV(3) & "s"
-    NameI(4) = "普通材料赛艇 " & ItemV(4) & "s"
-    NameI(5) = "《Aloha 'Oe》黑胶唱片 " & ItemV(5) & "s"
-    NameI(6) = "枸杞茶 " & ItemV(6) & "s"
+    NameI(0) = "黑框眼镜"
+    NameI(1) = "《他改变了中国》"
+    NameI(2) = "机械手表套装"
+    NameI(3) = "普通鸭嘴笔"
+    NameI(4) = "普通材料赛艇"
+    NameI(5) = "《Aloha 'Oe》黑胶唱片"
+    NameI(6) = "枸杞茶"
     '研究名
     NameR(0) = "黑框眼镜制造"
     NameR(1) = "《他改变了中国》出版"
@@ -42,6 +42,12 @@ Public Sub Mainconst() '常数表
     NameR(13) = "工作区员工宿舍建造"
     NameR(14) = "工作区广场建造"
     NameR(15) = "枸杞茶上市"
+    'NameR(16) = "玳瑁框眼镜制造"
+    'NameR(17) = "《读懂江泽民》出版"
+    'NameR(18) = "便携原子钟整合"
+    'NameR(19) = "自动鸭嘴笔实装"
+    'NameR(20) = "赛艇外表面镀铪工作"
+    'NameR(21) = "DVD版唱片出版"
     '研究费用
     ResV(0) = 20
     ResV(1) = 30
@@ -111,19 +117,19 @@ Dim IRS%
     If NumTotalR(15) Then ShopF.BuyI(6).Enabled = True
     '升级区
     If NumTotalR(0) And NumTotalR(6) And Not updPSed(0, 0) Then _
-    NameI(0) = "意大利窄边眼镜 " & ItemV(0) & "s": ItemPS(0) = 1.5: updPSed(0, 0) = True
+    NameI(0) = "意大利窄边眼镜": ItemPS(0) = 1.5: updPSed(0, 0) = True
     If NumTotalR(1) And NumTotalR(7) And Not updPSed(1, 0) Then _
-    NameI(1) = "《江泽民文选》 " & ItemV(1) & "s": ItemPS(1) = 1.5: updPSed(1, 0) = True
+    NameI(1) = "《江泽民文选》": ItemPS(1) = 1.5: updPSed(1, 0) = True
     If NumTotalR(2) And NumTotalR(8) And Not updPSed(2, 0) Then _
-    NameI(2) = "电子手表套装 " & ItemV(2) & "s": ItemPS(2) = 1.5: updPSed(2, 0) = True
+    NameI(2) = "电子手表套装": ItemPS(2) = 1.5: updPSed(2, 0) = True
     If NumTotalR(3) And NumTotalR(9) And Not updPSed(3, 0) Then _
-    NameI(3) = "高效鸭嘴笔 " & ItemV(3) & "s": ItemPS(3) = 1.5: updPSed(3, 0) = True
+    NameI(3) = "高效鸭嘴笔": ItemPS(3) = 1.5: updPSed(3, 0) = True
     If NumTotalR(4) And NumTotalR(10) And Not updPSed(4, 0) Then _
-    NameI(4) = "复合材料赛艇 " & ItemV(4) & "s": ItemPS(4) = 1.5: updPSed(4, 0) = True
+    NameI(4) = "复合材料赛艇": ItemPS(4) = 1.5: updPSed(4, 0) = True
     If NumTotalR(5) And NumTotalR(11) And Not updPSed(5, 0) Then _
-    NameI(5) = "《Aloha 'Oe》VCD版 " & ItemV(5) & "s": ItemPS(5) = 1.5: updPSed(5, 0) = True
+    NameI(5) = "《Aloha 'Oe》VCD版 ": ItemPS(5) = 1.5: updPSed(5, 0) = True
     For IRS = 0 To NumTopI
-        ShopF.BuyI(IRS).Caption = NameI(IRS)
+        ShopF.BuyI(IRS).Caption = NameI(IRS) & str(ItemV(IRS) * (1 + NumTotalS(IRS) * 0.1)) & "s"
         ShopF.NumI(IRS) = "目前共" & NumTotalS(IRS) & "个"
     Next IRS
 End Sub
@@ -175,11 +181,16 @@ Dim str As String, stuffstr, bitR, IL As Integer, ResTIstuff(NumTopR) As Boolean
     For IL = 0 To NumTopR
         ResTI(0, IL) = ResTIstuff(IL)
         ResTI(1, IL) = stuffstr(IL + NumTopI + 5)
-        If NumTotalR(IL) Then updCed(IL) = True
     Next IL
-    If NumTotalR(10) Then Call showWP(0)
-    If NumTotalR(11) Then Call showWP(1)
-    If NumTotalR(12) Then Call showWP(2)
+    If NumTotalR(6) Or NumTotalRN(6) Or ResTI(0, 6) Then updCed(0) = True
+    If NumTotalR(7) Or NumTotalRN(7) Or ResTI(0, 7) Then updCed(1) = True
+    If NumTotalR(8) Or NumTotalRN(8) Or ResTI(0, 8) Then updCed(2) = True
+    If NumTotalR(9) Or NumTotalRN(9) Or ResTI(0, 9) Then updCed(3) = True
+    If NumTotalR(10) Or NumTotalRN(10) Or ResTI(0, 10) Then updCed(4) = True
+    If NumTotalR(11) Or NumTotalRN(11) Or ResTI(0, 11) Then updCed(5) = True
+    If NumTotalR(12) Then Call showWP(0)
+    If NumTotalR(13) Then Call showWP(1)
+    If NumTotalR(14) Then Call showWP(2)
     Call Refe
     Call ResRef
     Call ResShop
@@ -188,4 +199,14 @@ End Sub
 
 Public Sub UpdEve(str$)
     Main.EventS = str & vbCrLf & Main.EventS
+End Sub
+
+Public Sub Shotadd(name As String, ts1 As Double)
+Dim I%
+    For I = 8 To 0 Step -1
+        Shotlist(0, I + 1) = Shotlist(0, I)
+        Shotlist(1, I + 1) = Shotlist(1, I)
+    Next I
+    Shotlist(0, 0) = name
+    Shotlist(1, 0) = ts1
 End Sub

@@ -169,11 +169,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Sub BuyI_Click(Index As Integer)
-    If BuyCheck(ItemV(Index), Ts) Then
+    If BuyCheck(ItemV(Index) * (1 + NumTotalS(Index) * 0.1), Ts) Then
         NumTotalS(Index) = NumTotalS(Index) + 1
         Else: MsgBox "秒数不够!", 16, "秒数不够"
     End If
     Call Refe
+    Call ResShop
 End Sub
 
 Private Sub Form_Load()

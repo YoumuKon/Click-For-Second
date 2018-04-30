@@ -13,6 +13,30 @@ Begin VB.Form Main
    ScaleHeight     =   8385
    ScaleWidth      =   8055
    StartUpPosition =   3  '窗口缺省
+   Begin VB.CommandButton ShotlistY 
+      Caption         =   "枪毙名单"
+      Height          =   375
+      Left            =   6720
+      TabIndex        =   16
+      Top             =   4920
+      Width           =   1215
+   End
+   Begin VB.CommandButton ItemList 
+      Caption         =   "统计物品"
+      Height          =   375
+      Left            =   5400
+      TabIndex        =   15
+      Top             =   5400
+      Width           =   1215
+   End
+   Begin VB.CommandButton ModSet 
+      Caption         =   "Mod..."
+      Height          =   375
+      Left            =   6720
+      TabIndex        =   14
+      Top             =   5400
+      Width           =   1215
+   End
    Begin VB.CommandButton Setting 
       Caption         =   "设置"
       Height          =   375
@@ -50,7 +74,7 @@ Begin VB.Form Main
       Left            =   1440
       Top             =   2280
    End
-   Begin VB.CommandButton Command1 
+   Begin VB.CommandButton shop 
       Caption         =   "商店"
       Height          =   375
       Left            =   5400
@@ -169,6 +193,9 @@ Begin VB.Form Main
       Begin VB.Menu MnuAbout 
          Caption         =   "关于(A&)"
       End
+      Begin VB.Menu GiveAwaySecond 
+         Caption         =   "上交全部秒数(G&)"
+      End
    End
 End
 Attribute VB_Name = "Main"
@@ -185,6 +212,7 @@ Private Sub CopyE_Click()
 End Sub
 
 Private Sub Form_Load()
+Dim I%
     On Error Resume Next
     Call Mainconst
     '初始化
@@ -201,6 +229,10 @@ Private Sub Form_Load()
         NumTotalR(I) = False
         ResTI(0, I) = False
         NumTotalRN(I) = False
+    Next I
+    For I = 0 To 9
+        Shotlist(0, I) = "待上榜"
+        Shotlist(1, I) = 0
     Next I
     ClickP = 1
     '默认设置
@@ -220,11 +252,39 @@ Private Sub Clear_Click()
 End Sub
 
 Private Sub Command1_Click()
-    ShopF.Show
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
 End
+End Sub
+
+Private Sub GiveAwaySecond_Click()
+Dim tsN As Double
+    tsN = 0
+    If MsgBox("真的要把全部的秒数续给长者吗?" & Chr(13) & "你的秒数会重置为0!", vbExclamation + vbYesNo, "警告") = vbYes Then
+        If Ts > 0 Then
+            tsN = Ts
+            Ts = 0
+            Total = Ts
+            MsgBox "续命成功!"
+            UpdEve User & "续给了长者" & tsN & "s"
+            Else: MsgBox "秒数不能为0!", 16, "秒数不够"
+        End If
+    End If
+    If tsN > Shotlist(1, 0) Then
+        If MsgBox("续命秒数达历史新高! 为" & tsN & "s" & Chr(13) & "登入枪毙名单吗?", vbQuestion + vbYesNo) = vbYes Then
+            Call Shotadd(User, tsN)
+            SecondList.Show
+            UpdEve User & "登上了枪毙名单榜首!"
+        End If
+    End If
+End Sub
+
+Private Sub ItemList_Click()
+Dim I%
+    For I = 0 To NumTopI
+        UpdEve NameI(I) & ":" & NumTotalS(I)
+    Next I
 End Sub
 
 Private Sub MnuAbout_Click()
@@ -239,12 +299,24 @@ Private Sub MnuSave_Click()
     Call saveF
 End Sub
 
+Private Sub ModSet_Click()
+    ModSetting.Show
+End Sub
+
 Private Sub Research_Click()
     ResearchF.Show
 End Sub
 
 Private Sub Setting_Click()
     SettingF.Show
+End Sub
+
+Private Sub shop_Click()
+    ShopF.Show
+End Sub
+
+Private Sub ShotlistY_Click()
+    SecondList.Show
 End Sub
 
 Private Sub Timer1_Timer()
@@ -267,7 +339,7 @@ End Sub
 
 Private Sub WorkPlace_Click()
     Ts = Ts + ClickP
-    Total = str(Ts)
+    Total = Ts
     If ClickEB Then UpdEve User & "贡献了" & ClickP & "s"
 End Sub
 

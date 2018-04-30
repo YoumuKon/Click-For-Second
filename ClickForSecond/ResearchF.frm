@@ -190,7 +190,7 @@ Dim num
     num = InputBox("请输入技能使用数量", "喝枸杞茶")
     If num <> "" Then
         If MsgBox("技能需要消耗" & num & "个枸杞茶" & Chr(13) & "现在有" & NumTotalS(6) & "个枸杞茶" & Chr(13) & "确定要使用技能吗?", _
-        vbYesNo, "喝枸杞茶") = vbYes Then Call RunSkill(0, num)
+        vbYesNo, "喝枸杞茶") = vbYes Then Call RunSkill(0, (num))
         Else: MsgBox "请输入物品数!", 16, "使用失败"
     End If
 End Sub

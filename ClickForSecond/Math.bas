@@ -88,6 +88,7 @@ Dim Boo(NumTopR) As Integer, stuff As String, IRS%
 End Function
 
 Public Sub bitBoo(str$, arrb() As Boolean)
+Dim I%
     For I = 0 To NumTopR
         If Mid(str, I + 1, 1) = "1" Then
             arrb(I) = True
