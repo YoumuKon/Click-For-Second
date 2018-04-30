@@ -6,41 +6,49 @@ Begin VB.Form Main
    ClientHeight    =   8385
    ClientLeft      =   150
    ClientTop       =   780
-   ClientWidth     =   8055
+   ClientWidth     =   9045
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   8385
-   ScaleWidth      =   8055
+   ScaleWidth      =   9045
    StartUpPosition =   3  '窗口缺省
+   Begin VB.CommandButton ItemCraft 
+      Caption         =   "物品合成"
+      Height          =   375
+      Left            =   7680
+      TabIndex        =   17
+      Top             =   4920
+      Width           =   1215
+   End
    Begin VB.CommandButton ShotlistY 
       Caption         =   "枪毙名单"
       Height          =   375
-      Left            =   6720
+      Left            =   6360
       TabIndex        =   16
-      Top             =   4920
+      Top             =   7920
       Width           =   1215
    End
    Begin VB.CommandButton ItemList 
       Caption         =   "统计物品"
       Height          =   375
-      Left            =   5400
+      Left            =   3480
       TabIndex        =   15
-      Top             =   5400
+      Top             =   3000
       Width           =   1215
    End
    Begin VB.CommandButton ModSet 
       Caption         =   "Mod..."
       Height          =   375
-      Left            =   6720
+      Left            =   7680
       TabIndex        =   14
-      Top             =   5400
+      Top             =   7920
       Width           =   1215
    End
    Begin VB.CommandButton Setting 
       Caption         =   "设置"
       Height          =   375
-      Left            =   5400
+      Left            =   6360
       TabIndex        =   13
       Top             =   4920
       Width           =   1215
@@ -48,7 +56,7 @@ Begin VB.Form Main
    Begin VB.CommandButton CopyE 
       Caption         =   "复制记录"
       Height          =   375
-      Left            =   1320
+      Left            =   960
       TabIndex        =   12
       ToolTipText     =   "将大事录复制到剪贴板"
       Top             =   3000
@@ -57,7 +65,7 @@ Begin VB.Form Main
    Begin VB.CommandButton Research 
       Caption         =   "研究"
       Height          =   375
-      Left            =   6720
+      Left            =   7680
       TabIndex        =   11
       Top             =   4440
       Width           =   1215
@@ -77,7 +85,7 @@ Begin VB.Form Main
    Begin VB.CommandButton shop 
       Caption         =   "商店"
       Height          =   375
-      Left            =   5400
+      Left            =   6360
       TabIndex        =   9
       Top             =   4440
       Width           =   1215
@@ -85,7 +93,7 @@ Begin VB.Form Main
    Begin VB.CommandButton Clear 
       Caption         =   "清空记录"
       Height          =   375
-      Left            =   2520
+      Left            =   2160
       TabIndex        =   8
       ToolTipText     =   "清空大事录"
       Top             =   3000
@@ -93,7 +101,7 @@ Begin VB.Form Main
    End
    Begin VB.TextBox User 
       Height          =   270
-      Left            =   5400
+      Left            =   6360
       Locked          =   -1  'True
       TabIndex        =   2
       Text            =   "Youmu"
@@ -109,12 +117,12 @@ Begin VB.Form Main
       ScrollBars      =   2  'Vertical
       TabIndex        =   0
       Top             =   3480
-      Width           =   5175
+      Width           =   6135
    End
    Begin VB.Label Persec 
       Caption         =   "现在1秒最少能续: 0s"
       Height          =   255
-      Left            =   5400
+      Left            =   6360
       TabIndex        =   10
       Top             =   4080
       Width           =   2535
@@ -137,7 +145,7 @@ Begin VB.Form Main
       Left            =   0
       TabIndex        =   7
       Top             =   0
-      Width           =   8055
+      Width           =   9015
    End
    Begin VB.Label Label4 
       Caption         =   "大事录："
@@ -150,7 +158,7 @@ Begin VB.Form Main
    Begin VB.Label Label3 
       Caption         =   "s"
       Height          =   255
-      Left            =   7680
+      Left            =   8640
       TabIndex        =   5
       Top             =   3720
       Width           =   255
@@ -158,7 +166,7 @@ Begin VB.Form Main
    Begin VB.Label Total 
       Alignment       =   1  'Right Justify
       Height          =   255
-      Left            =   5400
+      Left            =   6360
       TabIndex        =   4
       Top             =   3720
       Width           =   2295
@@ -166,7 +174,7 @@ Begin VB.Form Main
    Begin VB.Label Label2 
       Caption         =   "您的时间法阵储存的秒数为："
       Height          =   255
-      Left            =   5400
+      Left            =   6360
       TabIndex        =   3
       Top             =   3480
       Width           =   2535
@@ -174,7 +182,7 @@ Begin VB.Form Main
    Begin VB.Label Label1 
       Caption         =   "同志，你的名字是："
       Height          =   255
-      Left            =   3840
+      Left            =   4800
       TabIndex        =   1
       Top             =   3120
       Width           =   1695
@@ -222,7 +230,7 @@ Dim I%
     Total = 0
     For I = 0 To NumTopI
         ShopF.BuyI(I).Enabled = False
-        NumTotalS(I) = 0
+        NumTotalI(I) = 0
         ItemPS(I) = 1
     Next I
     For I = 0 To NumTopR
@@ -235,12 +243,13 @@ Dim I%
         Shotlist(1, I) = 0
     Next I
     ClickP = 1
+    ItemPST = 1
     '默认设置
     ResearchF.Resable.AddItem NameR(0)
-    ResearchF.Resable.AddItem NameR(12)
+    ResearchF.Resable.AddItem NameR(19)
     NumTotalRN(0) = True
-    NumTotalRN(12) = True
-    ClickEB = True
+    NumTotalRN(19) = True
+    ClickEB = False
     Common.Filter = "保存文档(*.savesecond)|*.savesecond|全部文件(*.*)|*.*"
     Call showWP(-1)
     Call NumPer
@@ -283,7 +292,7 @@ End Sub
 Private Sub ItemList_Click()
 Dim I%
     For I = 0 To NumTopI
-        UpdEve NameI(I) & ":" & NumTotalS(I)
+        UpdEve NameI(I) & ":" & NumTotalI(I)
     Next I
 End Sub
 

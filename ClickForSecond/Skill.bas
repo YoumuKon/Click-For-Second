@@ -5,7 +5,7 @@ Public Sub RunSkill(ind As Integer, Optional Int0 As Integer)
 Dim RunST%, ST%
     Select Case ind
         Case 0:
-        If BuyCheck((Int0), NumTotalS(6)) Then
+        If BuyCheck((Int0), NumTotalI(6)) Then
             For RunST = ResearchF.Resing.ListCount - 1 To 0 Step -1
                 ST = -1
                 Do While ST = -1
@@ -17,7 +17,7 @@ Dim RunST%, ST%
             MsgBox "技能使用成功!", 0, "使用成功"
             Else: MsgBox "物品数不够!", 16, "使用失败"
         End If
-        ShopF.NumI(6) = "目前共" & NumTotalS(6) & "个"
+        ShopF.NumI(6) = "目前共" & NumTotalI(6) & "个"
         Case Else: MsgBox "无此技能!", 16, "使用失败"
     End Select
 End Sub

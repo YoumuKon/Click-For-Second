@@ -5,17 +5,27 @@ Begin VB.Form ShopF
    ClientHeight    =   4050
    ClientLeft      =   10200
    ClientTop       =   7950
-   ClientWidth     =   5415
+   ClientWidth     =   10230
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   4050
-   ScaleWidth      =   5415
+   ScaleWidth      =   10230
+   Begin VB.CommandButton BuyI 
+      Caption         =   "二胡"
+      Enabled         =   0   'False
+      Height          =   615
+      Index           =   6
+      Left            =   120
+      TabIndex        =   16
+      Top             =   1440
+      Width           =   1575
+   End
    Begin VB.CommandButton BuyI 
       Caption         =   "枸杞茶"
       Enabled         =   0   'False
       Height          =   615
-      Index           =   6
+      Index           =   7
       Left            =   120
       TabIndex        =   13
       Top             =   2880
@@ -26,9 +36,9 @@ Begin VB.Form ShopF
       Enabled         =   0   'False
       Height          =   615
       Index           =   5
-      Left            =   3480
+      Left            =   8520
       TabIndex        =   11
-      Top             =   1440
+      Top             =   360
       Width           =   1575
    End
    Begin VB.CommandButton BuyI 
@@ -36,9 +46,9 @@ Begin VB.Form ShopF
       Enabled         =   0   'False
       Height          =   615
       Index           =   4
-      Left            =   1800
+      Left            =   6840
       TabIndex        =   9
-      Top             =   1440
+      Top             =   360
       Width           =   1575
    End
    Begin VB.CommandButton BuyI 
@@ -46,9 +56,9 @@ Begin VB.Form ShopF
       Enabled         =   0   'False
       Height          =   615
       Index           =   3
-      Left            =   120
+      Left            =   5160
       TabIndex        =   7
-      Top             =   1440
+      Top             =   360
       Width           =   1575
    End
    Begin VB.CommandButton BuyI 
@@ -81,6 +91,15 @@ Begin VB.Form ShopF
       Top             =   360
       Width           =   1575
    End
+   Begin VB.Label NumI 
+      Caption         =   "目前共0个"
+      Height          =   255
+      Index           =   7
+      Left            =   120
+      TabIndex        =   17
+      Top             =   2160
+      Width           =   1575
+   End
    Begin VB.Label Label2 
       Caption         =   "一次性消耗物品"
       Height          =   255
@@ -102,27 +121,27 @@ Begin VB.Form ShopF
       Caption         =   "目前共0个"
       Height          =   255
       Index           =   5
-      Left            =   3480
+      Left            =   8520
       TabIndex        =   12
-      Top             =   2160
+      Top             =   1080
       Width           =   1575
    End
    Begin VB.Label NumI 
       Caption         =   "目前共0个"
       Height          =   255
       Index           =   4
-      Left            =   1800
+      Left            =   6840
       TabIndex        =   10
-      Top             =   2160
+      Top             =   1080
       Width           =   1575
    End
    Begin VB.Label NumI 
       Caption         =   "目前共0个"
       Height          =   255
       Index           =   3
-      Left            =   120
+      Left            =   5160
       TabIndex        =   8
-      Top             =   2160
+      Top             =   1080
       Width           =   1575
    End
    Begin VB.Label NumI 
@@ -169,8 +188,8 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Sub BuyI_Click(Index As Integer)
-    If BuyCheck(ItemV(Index) * (1 + NumTotalS(Index) * 0.1), Ts) Then
-        NumTotalS(Index) = NumTotalS(Index) + 1
+    If BuyCheck(ItemV(Index) * (1 + NumTotalI(Index) * 0.1), Ts) Then
+        NumTotalI(Index) = NumTotalI(Index) + 1
         Else: MsgBox "秒数不够!", 16, "秒数不够"
     End If
     Call Refe

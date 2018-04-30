@@ -5,18 +5,18 @@ Begin VB.Form SettingF
    ClientHeight    =   1050
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   2760
+   ClientWidth     =   3270
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   1050
-   ScaleWidth      =   2760
+   ScaleWidth      =   3270
    StartUpPosition =   3  '窗口缺省
    Begin VB.CommandButton ButtonN 
       Cancel          =   -1  'True
       Caption         =   "取消"
       Height          =   495
-      Left            =   1440
+      Left            =   1920
       TabIndex        =   2
       Top             =   480
       Width           =   1215
@@ -30,12 +30,12 @@ Begin VB.Form SettingF
       Width           =   1215
    End
    Begin VB.CheckBox ClickE 
-      Caption         =   "在大事录记下点击事件"
+      Caption         =   "在大事录记下点击事件(调试用)"
       Height          =   255
       Left            =   120
       TabIndex        =   0
       Top             =   120
-      Width           =   2295
+      Width           =   3015
    End
 End
 Attribute VB_Name = "SettingF"

@@ -171,11 +171,19 @@ Dim Resin As Integer, TRes%
                     Case 8: UpdEve "机械手表套装已升级为电子手表套装!"
                     Case 9: UpdEve "普通鸭嘴笔已升级为高效鸭嘴笔!"
                     Case 10: UpdEve "普通材料赛艇已升级为复合材料赛艇!"
-                    Case 11: UpdEve "黑胶唱片已升级为VCD!"
-                    Case 12: UpdEve "工作区房屋已建造完毕!"
-                    Case 13: UpdEve "工作区员工宿舍已建造完毕!"
-                    Case 14: UpdEve "工作区广场已建造完毕!"
-                    Case 15: UpdEve "现在已经可以购买枸杞茶了!"
+                    Case 11: UpdEve "唱片已升级为磁带!"
+                    Case 12: UpdEve "现在已经可以购买枸杞茶了!"
+                    Case 13: UpdEve "意大利窄边眼镜已升级为玳瑁框眼镜!"
+                    Case 14: UpdEve "《江泽民文选》已升级为《读懂江泽民》!"
+                    Case 15: UpdEve "电子手表套装已升级为便携原子钟套装!"
+                    Case 16: UpdEve "高效鸭嘴笔已升级为自动鸭嘴笔!"
+                    Case 17: UpdEve "复合材料赛艇已升级为镀铪赛艇!"
+                    Case 18: UpdEve "唱片已升级为DVD!"
+                    Case 19: UpdEve "工作区房屋已建造完毕!"
+                    Case 20: UpdEve "工作区员工宿舍已建造完毕!"
+                    Case 21: UpdEve "工作区员工广场已建造完毕!"
+                    Case 22: UpdEve "工作区工厂已建造完毕!"
+                    Case 23: UpdEve "时间法阵已描绘完毕!"
                 End Select
                 Call ResShop
                 ElseIf ResTI(1, Resin) > 0 Then ResTI(1, Resin) = ResTI(1, Resin) - 1
@@ -189,8 +197,9 @@ Private Sub USkill0_Click()
 Dim num
     num = InputBox("请输入技能使用数量", "喝枸杞茶")
     If num <> "" Then
-        If MsgBox("技能需要消耗" & num & "个枸杞茶" & Chr(13) & "现在有" & NumTotalS(6) & "个枸杞茶" & Chr(13) & "确定要使用技能吗?", _
+        If MsgBox("技能需要消耗" & num & "个枸杞茶" & Chr(13) & "现在有" & NumTotalI(6) & "个枸杞茶" & Chr(13) & "确定要使用技能吗?", _
         vbYesNo, "喝枸杞茶") = vbYes Then Call RunSkill(0, (num))
+        UpdEve Main.User & "使用“喝枸杞茶”技能, 消耗" & num & "个枸杞茶并成功浪费" & (60 * num) & "秒时间"
         Else: MsgBox "请输入物品数!", 16, "使用失败"
     End If
 End Sub

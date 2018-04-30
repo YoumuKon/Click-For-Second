@@ -3,14 +3,14 @@ Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form ModSetting 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "管理mod"
-   ClientHeight    =   4785
+   ClientHeight    =   4920
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   7275
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4785
+   ScaleHeight     =   4920
    ScaleWidth      =   7275
    ShowInTaskbar   =   0   'False
    StartUpPosition =   3  '窗口缺省
@@ -23,7 +23,7 @@ Begin VB.Form ModSetting
    End
    Begin VB.TextBox Modde 
       BackColor       =   &H8000000F&
-      Height          =   3855
+      Height          =   4095
       Left            =   1680
       Locked          =   -1  'True
       MultiLine       =   -1  'True
@@ -33,15 +33,14 @@ Begin VB.Form ModSetting
       Width           =   5415
    End
    Begin VB.ListBox Modlist 
-      Height          =   3630
+      Height          =   3840
       Left            =   120
-      Style           =   1  'Checkbox
       TabIndex        =   1
       Top             =   720
       Width           =   1455
    End
    Begin VB.CommandButton ModAdd 
-      Caption         =   "添加模组"
+      Caption         =   "添加Mod文件夹"
       Height          =   495
       Left            =   120
       TabIndex        =   0
