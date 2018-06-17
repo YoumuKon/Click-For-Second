@@ -9,6 +9,22 @@ Public Function BuyCheck(Value As Double, money As Double) As Boolean
     End If
 End Function
 
+Public Function NeedItemCheck(Item As String, Num As String) As Boolean
+Dim strI, strN, I
+    NeedItemCheck = True
+    strI = Split(Item, "|")
+    strN = Split(Num, "|")
+    For I = 0 To UBound(strI) - 1
+        NeedItemCheck = NeedItemCheck And (strN(I) >= NumTotalI(strI(I)))
+        If NeedItemCheck = False Then Exit Function
+    Next I
+    If NeedItemCheck Then
+        For I = 0 To UBound(strI) - 1
+            Call BuyCheck(CDbl(strN(I)), CDbl(NumTotalI(strI(I))))
+        Next I
+    End If
+End Function
+
 Public Function bitHex(ByVal str$) As String
 Dim bit As String
     Do While Len(str) Mod 4 <> 0
@@ -66,33 +82,27 @@ Dim hex As String
     Loop
 End Function
 
-Public Function ResSave() As String
-Dim Boo(NumTopR) As Integer, stuff As String, IRS%
-    ResSave = ""
-    stuff = ""
-    For IRS = 0 To NumTopR
-        Boo(IRS) = -NumTotalR(IRS)
-        ResSave = ResSave & Boo(IRS)
-    Next IRS
-    For IRS = 0 To NumTopR
-        Boo(IRS) = -ResTI(0, IRS)
-        stuff = stuff & Boo(IRS)
-    Next IRS
-    ResSave = bitHex(ResSave) & "+" & bitHex(stuff)
-    stuff = ""
-    For IRS = 0 To NumTopR
-        Boo(IRS) = -NumTotalRN(IRS)
-        stuff = stuff & Boo(IRS)
-    Next IRS
-    ResSave = ResSave & "+" & bitHex(stuff)
-End Function
-
 Public Sub bitBoo(str$, arrb() As Boolean)
 Dim I%
-    For I = 0 To NumTopR
+    For I = 0 To UBound(arrb)
         If Mid(str, I + 1, 1) = "1" Then
             arrb(I) = True
             Else: arrb(I) = False
         End If
     Next I
+End Sub
+
+Public Sub Needcele(StrIn As String, StrOut1, StrOut2, StrOut3)
+Dim str1, str2
+    str1 = Split(StrIn, ">", 2)
+    str2 = Split(str1(0), "<", 2)
+    '研究
+    StrOut1 = Split(str2(0), "+")
+    '物品
+    If UBound(str2) >= 1 Then
+        StrOut2 = Split(str2(1), "+")
+        Else: StrOut2 = Array()
+    End If
+    '解锁
+    StrOut3 = Split(str1(1), "+")
 End Sub

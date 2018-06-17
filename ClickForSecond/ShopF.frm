@@ -3,8 +3,8 @@ Begin VB.Form ShopF
    BorderStyle     =   1  'Fixed Single
    Caption         =   "小商店"
    ClientHeight    =   4050
-   ClientLeft      =   10200
-   ClientTop       =   7950
+   ClientLeft      =   6345
+   ClientTop       =   1830
    ClientWidth     =   10230
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -97,7 +97,7 @@ Begin VB.Form ShopF
       Index           =   7
       Left            =   120
       TabIndex        =   17
-      Top             =   2160
+      Top             =   3600
       Width           =   1575
    End
    Begin VB.Label Label2 
@@ -114,7 +114,7 @@ Begin VB.Form ShopF
       Index           =   6
       Left            =   120
       TabIndex        =   14
-      Top             =   3600
+      Top             =   2160
       Width           =   1575
    End
    Begin VB.Label NumI 
@@ -188,15 +188,15 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Sub BuyI_Click(Index As Integer)
-    If BuyCheck(ItemV(Index) * (1 + NumTotalI(Index) * 0.1), Ts) Then
+    If BuyCheck(ItemV(Index) * (1 + NumTotalI(Index) * (0.25 * ItemPS(Index))), Ts) Then
         NumTotalI(Index) = NumTotalI(Index) + 1
         Else: MsgBox "秒数不够!", 16, "秒数不够"
     End If
     Call Refe
-    Call ResShop
+    Call ResRefresh
 End Sub
 
 Private Sub Form_Load()
-    Call ResShop
+    Call ResRefresh
 End Sub
 

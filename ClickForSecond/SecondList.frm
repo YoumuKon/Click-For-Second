@@ -3,15 +3,14 @@ Begin VB.Form SecondList
    BorderStyle     =   1  'Fixed Single
    Caption         =   "枪毙名单"
    ClientHeight    =   3075
-   ClientLeft      =   45
-   ClientTop       =   375
+   ClientLeft      =   4185
+   ClientTop       =   5850
    ClientWidth     =   2745
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3075
    ScaleWidth      =   2745
-   StartUpPosition =   3  '窗口缺省
    Begin VB.CommandButton Exit 
       Caption         =   "退出"
       Height          =   495

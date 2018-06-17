@@ -4,20 +4,28 @@ Begin VB.Form Main
    BorderStyle     =   1  'Fixed Single
    Caption         =   "CFS+"
    ClientHeight    =   8385
-   ClientLeft      =   150
-   ClientTop       =   780
+   ClientLeft      =   2025
+   ClientTop       =   2685
    ClientWidth     =   9045
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   8385
    ScaleWidth      =   9045
-   StartUpPosition =   3  '窗口缺省
+   Begin VB.CommandButton NBuild 
+      Caption         =   "建筑管理"
+      Enabled         =   0   'False
+      Height          =   375
+      Left            =   6360
+      TabIndex        =   17
+      Top             =   5400
+      Width           =   1215
+   End
    Begin VB.CommandButton ItemCraft 
       Caption         =   "物品合成"
       Height          =   375
       Left            =   7680
-      TabIndex        =   17
+      TabIndex        =   16
       Top             =   4920
       Width           =   1215
    End
@@ -25,7 +33,7 @@ Begin VB.Form Main
       Caption         =   "枪毙名单"
       Height          =   375
       Left            =   6360
-      TabIndex        =   16
+      TabIndex        =   15
       Top             =   7920
       Width           =   1215
    End
@@ -33,16 +41,8 @@ Begin VB.Form Main
       Caption         =   "统计物品"
       Height          =   375
       Left            =   3480
-      TabIndex        =   15
-      Top             =   3000
-      Width           =   1215
-   End
-   Begin VB.CommandButton ModSet 
-      Caption         =   "Mod..."
-      Height          =   375
-      Left            =   7680
       TabIndex        =   14
-      Top             =   7920
+      Top             =   3000
       Width           =   1215
    End
    Begin VB.CommandButton Setting 
@@ -100,6 +100,7 @@ Begin VB.Form Main
       Width           =   1215
    End
    Begin VB.TextBox User 
+      CausesValidation=   0   'False
       Height          =   270
       Left            =   6360
       Locked          =   -1  'True
@@ -202,7 +203,15 @@ Begin VB.Form Main
          Caption         =   "关于(A&)"
       End
       Begin VB.Menu GiveAwaySecond 
-         Caption         =   "上交全部秒数(G&)"
+         Caption         =   "续去全部秒数(G&)"
+      End
+      Begin VB.Menu MnuSkill 
+         Caption         =   "技能"
+         Visible         =   0   'False
+         Begin VB.Menu MnuSkill0 
+            Caption         =   "喝枸杞茶(0&)"
+            Enabled         =   0   'False
+         End
       End
    End
 End
@@ -221,14 +230,37 @@ End Sub
 
 Private Sub Form_Load()
 Dim I%
-    On Error Resume Next
-    Call Mainconst
+    '为防止编译后出现错误而设
+    'On Error Resume Next
+    If Dir("MainOption.ini") <> "" Then
+        If FileLen("MainOption.ini") <> 0 Then
+            Open "MainOption.ini" For Input As #1
+            Line Input #1, ConfigA
+            Line Input #1, LangA
+            Close #1
+        End If
+    End If
+    If ConfigA = "" Then
+        SettingF.Common.Filter = "配置文件(*.CFSconfig)|*.CFSconfig|全部文件(*.*)|*.*"
+        SettingF.Common.ShowOpen
+        ConfigA = SettingF.Common.FileName
+    End If
+    If LangA = "" Then
+        SettingF.Common.Filter = "语言文件(*.CFSlang)|*.CFSlang|全部文件(*.*)|*.*"
+        SettingF.Common.ShowOpen
+        LangA = SettingF.Common.FileName
+    End If
+    SettingF.ConfigAddress = ConfigA
+    SettingF.LangAddress = LangA
+    Call mainload
     '初始化
     Ts = 0
     EventS = ""
-    chg = 0
     Total = 0
-    For I = 0 To NumTopI
+    ClickP = 1
+    ItemPST = 1
+    UserN = User.Text
+    For I = 0 To SellI
         ShopF.BuyI(I).Enabled = False
         NumTotalI(I) = 0
         ItemPS(I) = 1
@@ -242,29 +274,27 @@ Dim I%
         Shotlist(0, I) = "待上榜"
         Shotlist(1, I) = 0
     Next I
-    ClickP = 1
-    ItemPST = 1
     '默认设置
-    ResearchF.Resable.AddItem NameR(0)
-    ResearchF.Resable.AddItem NameR(19)
-    NumTotalRN(0) = True
-    NumTotalRN(19) = True
     ClickEB = False
     Common.Filter = "保存文档(*.savesecond)|*.savesecond|全部文件(*.*)|*.*"
     Call showWP(-1)
     Call NumPer
-    Call ResRef
+    '默认研究
+    NumTotalRN(0) = True
+    NumTotalRN(23) = True
+    '默认技能
+    MnuSkill0.Enabled = True
+    '默认合成
+    Crafting(1, 0) = True
 End Sub
 
 Private Sub Clear_Click()
     EventS = ""
 End Sub
 
-Private Sub Command1_Click()
-End Sub
-
 Private Sub Form_Unload(Cancel As Integer)
-End
+    Close
+    End
 End Sub
 
 Private Sub GiveAwaySecond_Click()
@@ -276,40 +306,48 @@ Dim tsN As Double
             Ts = 0
             Total = Ts
             MsgBox "续命成功!"
-            UpdEve User & "续给了长者" & tsN & "s"
+            UpdEve StrEnc(StrEnc(EventList(2), "&U", UserN), "&Mem1", tsN)
             Else: MsgBox "秒数不能为0!", 16, "秒数不够"
         End If
     End If
     If tsN > Shotlist(1, 0) Then
         If MsgBox("续命秒数达历史新高! 为" & tsN & "s" & Chr(13) & "登入枪毙名单吗?", vbQuestion + vbYesNo) = vbYes Then
-            Call Shotadd(User, tsN)
+            Call Shotadd(UserN, tsN)
             SecondList.Show
-            UpdEve User & "登上了枪毙名单榜首!"
+            UpdEve EventList(3)
         End If
     End If
+End Sub
+
+Private Sub ItemCraft_Click()
+    CraftingF.Show
 End Sub
 
 Private Sub ItemList_Click()
 Dim I%
     For I = 0 To NumTopI
-        UpdEve NameI(I) & ":" & NumTotalI(I)
+        UpdEve StrEnc(StrEnc(EventList(4), "&Mem1", NameI(I)), "&Mem2", NumTotalI(I))
     Next I
 End Sub
 
 Private Sub MnuAbout_Click()
-    MsgBox "挂机游戏ClickForSecond   By YoumuKon" & Chr(13) & "版本号: " & CFSVersion
+    MsgBox "ClickForSecond   By YoumuKon" & Chr(13) & "版本号: " & CFSVersion
 End Sub
 
 Private Sub MnuLoad_Click()
-    Call loadf
+    Call loadF
 End Sub
 
 Private Sub MnuSave_Click()
     Call saveF
 End Sub
 
-Private Sub ModSet_Click()
-    ModSetting.Show
+Private Sub MnuSkill0_Click()
+    RunSkill 0
+End Sub
+
+Private Sub NBuild_Click()
+    BuildingF.Show
 End Sub
 
 Private Sub Research_Click()
@@ -340,15 +378,26 @@ Private Sub User_Change()
 End Sub
 
 Private Sub User_Click()
-    chg = MsgBox("你要改变你的名字吗?" & Chr(13) & "一旦改变将重置记录!", 4 + 48, "名字改变警告")
-    If chg = vbYes Then
+    If MsgBox("你要改变你的名字吗?" & Chr(13) & "一旦改变将重置记录!", 4 + 48, "名字改变警告") = vbYes Then
         User.Text = InputBox("请输入名字")
+    End If
+End Sub
+
+Private Sub WorkPlace_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+    If Button = 2 Then
+        PopupMenu MnuSkill
+        Else
     End If
 End Sub
 
 Private Sub WorkPlace_Click()
     Ts = Ts + ClickP
     Total = Ts
-    If ClickEB Then UpdEve User & "贡献了" & ClickP & "s"
+    If ClickEB Then UpdEve StrEnc(StrEnc(EventList(0), "&U", UserN), "&Mem1", ClickP)
 End Sub
 
+Private Sub WorkPlace_DblClick()
+    Ts = Ts + ClickP
+    Total = Ts
+    If ClickEB Then UpdEve StrEnc(StrEnc(EventList(0), "&U", UserN), "&Mem1", ClickP)
+End Sub

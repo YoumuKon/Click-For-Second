@@ -40,7 +40,7 @@ Begin VB.Form ModSetting
       Width           =   1455
    End
    Begin VB.CommandButton ModAdd 
-      Caption         =   "添加Mod文件夹"
+      Caption         =   "添加Mod"
       Height          =   495
       Left            =   120
       TabIndex        =   0

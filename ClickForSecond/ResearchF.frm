@@ -3,8 +3,8 @@ Begin VB.Form ResearchF
    BorderStyle     =   1  'Fixed Single
    Caption         =   "时间研究室"
    ClientHeight    =   5865
-   ClientLeft      =   10020
-   ClientTop       =   1785
+   ClientLeft      =   8325
+   ClientTop       =   1470
    ClientWidth     =   6225
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -44,6 +44,7 @@ Begin VB.Form ResearchF
       Left            =   120
       Locked          =   -1  'True
       MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
       TabIndex        =   1
       Text            =   "ResearchF.frx":0000
       Top             =   4440
@@ -72,22 +73,13 @@ Begin VB.Form ResearchF
       Top             =   120
       Width           =   1935
    End
-   Begin VB.Label label1 
+   Begin VB.Label Label1 
       Caption         =   "可用研究项目"
       Height          =   255
       Left            =   120
       TabIndex        =   4
       Top             =   120
       Width           =   1935
-   End
-   Begin VB.Menu MnuUser 
-      Caption         =   "用户菜单"
-      Begin VB.Menu MnuUskill 
-         Caption         =   "技能"
-         Begin VB.Menu USkill0 
-            Caption         =   "喝枸杞茶(1&)"
-         End
-      End
    End
 End
 Attribute VB_Name = "ResearchF"
@@ -99,10 +91,6 @@ Option Explicit
 
 Private Sub Form_Load()
     Call ResRef
-End Sub
-
-Private Sub Resing_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    If Button = 2 Then PopupMenu MnuUser
 End Sub
 
 Private Sub Resable_Click()
@@ -134,18 +122,21 @@ Dim resN As Integer, RV As Double
         MsgBox "请选择研究项目!", vbCritical, "未选择研究"
         Else: resN = ResNum(Resable.List(Resable.ListIndex)): RV = ResV(resN)
         If BuyCheck(RV, Ts) Then
-            NumTotalRN(resN) = False
-            ResTI(0, resN) = True
-            ResTI(1, resN) = ResT(resN)
-            Resing.AddItem Resable.List(Resable.ListIndex)
-            Resable.RemoveItem Resable.ListIndex
+            If NeedItemCheck(ResVI(0, resN), ResVI(1, resN)) Then
+                NumTotalRN(resN) = False
+                ResTI(0, resN) = True
+                ResTI(1, resN) = ResT(resN)
+                Resing.AddItem Resable.List(Resable.ListIndex)
+                Resable.RemoveItem Resable.ListIndex
+                Else: MsgBox "物品数不够!", 16, "秒数不够"
+            End If
             Else: MsgBox "秒数不够!", 16, "秒数不够"
         End If
     End If
 End Sub
 
 Private Sub Timer1_Timer()
-Dim Resin As Integer, TRes%
+Dim Resin As Integer, TRes%, I As Integer
     If Resing.ListCount <> 0 Then
         For TRes = Resing.ListCount - 1 To 0 Step -1
             Resin = -1
@@ -155,37 +146,15 @@ Dim Resin As Integer, TRes%
             If ResTI(1, Resin) = 0 Then
                 ResTI(0, Resin) = False
                 NumTotalR(Resin) = True
-                Resed.AddItem NameR(Resin)
+                Resed.AddItem NameR(0, Resin)
                 Resing.RemoveItem TRes
-                UpdEve "“" & NameR(Resin) & "”" & "研究成功!"
-                Select Case Resin
-                    '添加新研究时直接粘贴
-                    Case 0: UpdEve "现在已经可以购买黑框眼镜了!"
-                    Case 1: UpdEve "现在已经可以购买《他改变了中国》了!"
-                    Case 2: UpdEve "现在已经可以购买机械手表套装了!"
-                    Case 3: UpdEve "现在已经可以购买普通鸭嘴笔了!"
-                    Case 4: UpdEve "现在已经可以购买赛艇了!"
-                    Case 5: UpdEve "现在已经可以购买《Aloha 'Oe》黑胶唱片了!"
-                    Case 6: UpdEve "黑框眼镜已升级为意大利窄边眼镜!"
-                    Case 7: UpdEve "《他改变了中国》已升级为《江泽民文选》!"
-                    Case 8: UpdEve "机械手表套装已升级为电子手表套装!"
-                    Case 9: UpdEve "普通鸭嘴笔已升级为高效鸭嘴笔!"
-                    Case 10: UpdEve "普通材料赛艇已升级为复合材料赛艇!"
-                    Case 11: UpdEve "唱片已升级为磁带!"
-                    Case 12: UpdEve "现在已经可以购买枸杞茶了!"
-                    Case 13: UpdEve "意大利窄边眼镜已升级为玳瑁框眼镜!"
-                    Case 14: UpdEve "《江泽民文选》已升级为《读懂江泽民》!"
-                    Case 15: UpdEve "电子手表套装已升级为便携原子钟套装!"
-                    Case 16: UpdEve "高效鸭嘴笔已升级为自动鸭嘴笔!"
-                    Case 17: UpdEve "复合材料赛艇已升级为镀铪赛艇!"
-                    Case 18: UpdEve "唱片已升级为DVD!"
-                    Case 19: UpdEve "工作区房屋已建造完毕!"
-                    Case 20: UpdEve "工作区员工宿舍已建造完毕!"
-                    Case 21: UpdEve "工作区员工广场已建造完毕!"
-                    Case 22: UpdEve "工作区工厂已建造完毕!"
-                    Case 23: UpdEve "时间法阵已描绘完毕!"
-                End Select
-                Call ResShop
+                UpdEve StrEnc(EventList(1), "&Mem1", NameR(0, Resin))
+                For I = 0 To NumTopR
+                    If I = Resin Then
+                        UpdEve StrEnc(NameR(2, I), "&Mem1", NameR(0, Resin))
+                    End If
+                Next I
+                Call ResRefresh
                 ElseIf ResTI(1, Resin) > 0 Then ResTI(1, Resin) = ResTI(1, Resin) - 1
             End If
         Next TRes
@@ -193,13 +162,3 @@ Dim Resin As Integer, TRes%
     Call CheckRes
 End Sub
 
-Private Sub USkill0_Click()
-Dim num
-    num = InputBox("请输入技能使用数量", "喝枸杞茶")
-    If num <> "" Then
-        If MsgBox("技能需要消耗" & num & "个枸杞茶" & Chr(13) & "现在有" & NumTotalI(6) & "个枸杞茶" & Chr(13) & "确定要使用技能吗?", _
-        vbYesNo, "喝枸杞茶") = vbYes Then Call RunSkill(0, (num))
-        UpdEve Main.User & "使用“喝枸杞茶”技能, 消耗" & num & "个枸杞茶并成功浪费" & (60 * num) & "秒时间"
-        Else: MsgBox "请输入物品数!", 16, "使用失败"
-    End If
-End Sub
