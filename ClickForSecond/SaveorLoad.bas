@@ -28,6 +28,7 @@ Public Sub saveF()
 Dim ResHex As String, ISa As Integer
     ResHex = ResSave()
     Main.Common.DefaultExt = "savesecond"
+    Main.Common.Filter = "保存文档(*.savesecond)|*.savesecond|全部文件(*.*)|*.*"
     Main.Common.ShowSave
     If Main.Common.FileName = "" Then Exit Sub Else
     Open Main.Common.FileName For Output As #1
@@ -35,14 +36,12 @@ Dim ResHex As String, ISa As Integer
     For ISa = 0 To NumTopI
         Print #1, NumTotalI(ISa) & "|";
     Next ISa
-    Print #1, ClickP & "|" & ResHex & "|";
+    Print #1, ResHex & "|";
     For ISa = 0 To NumTopR
         Print #1, ResTI(1, ISa) & "|";
     Next ISa
-    For ISa = 0 To NumTopI
-        Print #1, ItemPS(ISa) & "|";
-    Next ISa
-    Print #1, CFSVersion & "|"
+    Print #1, OnlineTime & "|";
+    Print #1, CFSVersion & "|";
     Close #1
     UpdEve "已保存至'" & Main.Common.FileName & "'"
 End Sub
@@ -50,6 +49,7 @@ End Sub
 Public Sub loadF()
 Dim str As String, stuffstr, bitR, iL As Integer, ResTIstuff() As Boolean
     ReDim ResTIstuff(NumTopR)
+    Main.Common.Filter = "保存文档(*.savesecond)|*.savesecond"
     Main.Common.ShowOpen
     If Main.Common.FileName = "" Then Exit Sub Else
     Open Main.Common.FileName For Input As #1
@@ -57,42 +57,24 @@ Dim str As String, stuffstr, bitR, iL As Integer, ResTIstuff() As Boolean
     Close #1
     '载入文档处理
     stuffstr = Split(str, "|")
-    '0-用户名 1-总共秒数 2~(2+NumTopI)-物品数量 3+NumTopI-点击增加量
-    '4+NumTopI-十六进制研究数(研究完+研究中+可研究) (5+NumTopI)~(5+NumTopI+NumTopR)-研究剩余
-    '6+NumTopI+NumTopR-十六进制建筑数 (7+NumTopI+NumTopR)~(7+NumTopI+NumTopR+NumTopB)-建筑剩余(功能未调试完毕)
+    '0-用户名 1-总共秒数 2~(2+NumTopI)-物品数量
+    '3+NumTopI-十六进制研究数(研究完+研究中+可研究) (4+NumTopI)~(4+NumTopI+NumTopR)-研究剩余 5+NumTopI+NumTopR-总共在线时间
+    '6+NumTopI+NumTopR-十六进制建筑数 (7+NumTopI+NumTopR)~(7+NumTopI+NumTopR+NumTopB)-建筑剩余(WIP)
     '末尾-版本号(不使用)
     Main.User = stuffstr(0)
-    Ts = stuffstr(1)
+    Ts = CDec(stuffstr(1))
     For iL = 0 To NumTopI
         NumTotalI(iL) = stuffstr(iL + 2)
     Next iL
-    ClickP = stuffstr(NumTopI + 3)
-    bitR = Split(stuffstr(NumTopI + 4), "+", 3)
+    bitR = Split(stuffstr(NumTopI + 3), "+", 3)
     Call bitBoo(hexBit(bitR(0)), NumTotalR())
     Call bitBoo(hexBit(bitR(1)), ResTIstuff())
     Call bitBoo(hexBit(bitR(2)), NumTotalRN())
     For iL = 0 To NumTopR
         ResTI(0, iL) = ResTIstuff(iL)
-        ResTI(1, iL) = stuffstr(iL + NumTopI + 5)
+        ResTI(1, iL) = stuffstr(iL + NumTopI + 4)
     Next iL
-    If NumTotalR(7) Or NumTotalRN(7) Or ResTI(0, 7) Then updCed(7) = True
-    If NumTotalR(8) Or NumTotalRN(8) Or ResTI(0, 8) Then updCed(8) = True
-    If NumTotalR(9) Or NumTotalRN(9) Or ResTI(0, 9) Then updCed(9) = True
-    If NumTotalR(10) Or NumTotalRN(10) Or ResTI(0, 10) Then updCed(10) = True
-    If NumTotalR(11) Or NumTotalRN(11) Or ResTI(0, 11) Then updCed(11) = True
-    If NumTotalR(12) Or NumTotalRN(12) Or ResTI(0, 12) Then updCed(12) = True
-    If NumTotalR(13) Or NumTotalRN(13) Or ResTI(0, 13) Then updCed(13) = True
-    If NumTotalR(14) Or NumTotalRN(14) Or ResTI(0, 14) Then updCed(14) = True
-    If NumTotalR(15) Or NumTotalRN(15) Or ResTI(0, 15) Then updCed(15) = True
-    If NumTotalR(16) Or NumTotalRN(16) Or ResTI(0, 16) Then updCed(16) = True
-    If NumTotalR(17) Or NumTotalRN(17) Or ResTI(0, 17) Then updCed(17) = True
-    If NumTotalR(18) Or NumTotalRN(18) Or ResTI(0, 18) Then updCed(18) = True
-    If NumTotalR(19) Or NumTotalRN(19) Or ResTI(0, 19) Then updCed(19) = True
-    If NumTotalR(20) Or NumTotalRN(20) Or ResTI(0, 20) Then updCed(20) = True
-    If NumTotalR(23) Then Call showWP(0)
-    If NumTotalR(24) Then Call showWP(1)
-    If NumTotalR(25) Then Call showWP(2)
-    If NumTotalR(26) Then Call showWP(3)
+    OnlineTime = CDec(stuffstr(NumTopI + NumTopR + 5))
     Call Refe
     Call ResRef
     Call ResRefresh
@@ -128,6 +110,7 @@ Dim I%, str1 As String
     ReDim NumTotalRN(MaxNum): ReDim NumTotalR(MaxNum): ReDim NameR(2, MaxNum): ReDim NameS(1, MaxNum)
     ReDim BuildV(MaxNum): ReDim BuildT(MaxNum): ReDim NumTotalBN(MaxNum): ReDim NumTotalB(MaxNum): ReDim NameB(1, MaxNum): ReDim BuildTI(1, MaxNum): ReDim BuildVI(1, MaxNum)
     ReDim ResNeed(MaxNum): ReDim Crafting(1, MaxNum): ReDim WPevent(MaxNum): ReDim ItemV(MaxNum)
+    Call loadL
 End Sub
 
 Public Sub loadL()
@@ -219,7 +202,9 @@ Dim I%, J%, str1, str2
     NumWPE = I - 1: ReDim Preserve WPevent(NumWPE)
     I = 0
     Do
-        Crafting(0, I) = loadLang("Item.Crafting_" & I, LangA)
+        str1 = Split(loadLang("Item.Crafting_" & I, LangA), "|")
+        Crafting(0, I) = str1(0)
+        Crafting(1, I) = str1(1)
         I = I + 1
     Loop While loadLang("Item.Crafting_" & I, LangA) <> ""
     NumTopC = I - 1: ReDim Preserve Crafting(1, NumTopC)
@@ -233,7 +218,6 @@ End Sub
 
 Public Sub mainload()
     Call loadC
-    Call loadL
     Open "MainOption.ini" For Output As #1
     Print #1, ConfigA
     Print #1, LangA

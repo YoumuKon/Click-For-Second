@@ -2,8 +2,10 @@ Attribute VB_Name = "PublicFS"
 Option Explicit
 '一切东西的最大数量
 Public Const MaxNum = 1926
-'版本号/商品数量/工作区事件数
-Public CFSVersion, SellI, NumWPE
+'各符号常量
+Public Const StrMem1 = "&Mem1", StrMem2 = "&Mem2", StrUser = "&U", StrCrLf = "&CL"
+'版本号/商品数量/工作区事件数/在线时间
+Public CFSVersion, SellI, NumWPE, OnlineTime
 '物品种类总数/研究总数/技能总数/建筑种类总数/随机事件总数/通用事件总数/合成物总数/研究关系式总数
 Public NumTopI, NumTopR, NumTopS, NumTopB, NumTopRevent, NumTopE, NumTopC, NumTopRN
 '研究解锁判定/用户名/效率升级判定/枪毙名单/技能解锁判定
@@ -13,11 +15,12 @@ Public ItemV() As Double, ClickP As Integer, NameI() As String, NameII() As Stri
 '研究费用/研究时间/研究中+剩余时间/研究所需物品+数量
 Public ResV() As Double, ResT() As Double, ResTI(), ResVI() As String
 '物品数量/每秒续命秒数/通用事件总数/随机事件+提醒+概率/工作区提醒
-Public NumTotalI() As Double, sper As Double, EventList() As String, Reventlist(), WPevent() As String
+Public NumTotalI(), sper As Double, EventList() As String, Reventlist(), WPevent() As String
 '研究解锁状态/研究完成状态/研究名+描述+特殊提醒/技能名+特殊提醒/合成表+合成物判定情况/合成成功概率/研究关系式
 Public NumTotalRN() As Boolean, NumTotalR() As Boolean, NameR() As String, NameS(), Crafting(), CraftP As Double, ResNeed() As String
 '建筑费用/建筑时间/建筑解锁状态/'建筑建成状态/建筑名+描述/建筑中+剩余时间/建筑所需物品+数量
 Public BuildV() As Double, BuildT() As Double, NumTotalBN() As Boolean, NumTotalB() As Boolean, NameB(), BuildTI(), BuildVI()
+'各大配置文件地址
 Public ConfigA As String, LangA As String
 
 Public Sub Refe()
@@ -42,7 +45,6 @@ Public Sub NumPer() '每秒增加量=对每个自动续命商品的(商品增益*商品效率)求和*商品
 End Sub
 
 Public Sub ResRefresh()
-Dim IRS%
     '解锁区
     If NumTotalR(0) Then ShopF.BuyI(0).Enabled = True
     If NumTotalR(1) Then ShopF.BuyI(1).Enabled = True
@@ -82,14 +84,20 @@ Dim IRS%
     NameI(5) = NameII(2, 5): ItemPS(5) = 2.25: updPSed(1, 5) = True
     If NumTotalR(5) And NumTotalR(19) And Not updPSed(1, 6) Then _
     NameI(5) = NameII(2, 6): ItemPS(6) = 2.25: updPSed(1, 6) = True
-    For IRS = 0 To SellI
-        ShopF.BuyI(IRS).Caption = NameI(IRS) & str(ItemV(IRS) * (1 + NumTotalI(IRS) * (0.25 * ItemPS(IRS)))) & "s"
-        ShopF.NumI(IRS) = "目前共" & NumTotalI(IRS) & "个"
-    Next IRS
+    Call refshop
+    Call CraftingF.RefCraft
+End Sub
+
+Public Sub refshop()
+    For I = 0 To SellI
+        ShopF.BuyI(I).Caption = NameI(I) & str(ItemV(I) * (1 + NumTotalI(I) * (0.25 * ItemPS(I)))) & "s"
+        ShopF.NumI(I) = "目前共" & NumTotalI(I) & "个"
+    Next I
 End Sub
 
 Public Sub UpdEve(str$)
-    Main.EventS = str & vbCrLf & Main.EventS
+    Main.EventS = Main.EventS & str & vbCrLf
+    Main.EventS.SelStart = Len(Main.EventS.Text)
 End Sub
 
 Public Sub Shotadd(Name As String, ts1 As Double)
@@ -112,9 +120,10 @@ Dim inS As String, strS
     End If
 End Function
 
-Public Sub ResCraft()
+Public Function CraftNum(Inp As String)
 Dim I%
+    CraftNum = -1
     For I = 0 To NumTopC
-        If Crafting(1, I) Then CraftingF.CraftList.AddItem NameII(0, I + SellI + 1)
+        If NameII(0, I + SellI + 1) = Inp Then CraftNum = I: Exit Function
     Next I
-End Sub
+End Function

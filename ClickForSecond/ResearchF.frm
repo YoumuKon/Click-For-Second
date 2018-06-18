@@ -128,7 +128,7 @@ Dim resN As Integer, RV As Double
                 ResTI(1, resN) = ResT(resN)
                 Resing.AddItem Resable.List(Resable.ListIndex)
                 Resable.RemoveItem Resable.ListIndex
-                Else: MsgBox "物品数不够!", 16, "秒数不够"
+                Else: MsgBox "所需材料不足!", 16, "材料不足"
             End If
             Else: MsgBox "秒数不够!", 16, "秒数不够"
         End If
@@ -148,10 +148,10 @@ Dim Resin As Integer, TRes%, I As Integer
                 NumTotalR(Resin) = True
                 Resed.AddItem NameR(0, Resin)
                 Resing.RemoveItem TRes
-                UpdEve StrEnc(EventList(1), "&Mem1", NameR(0, Resin))
+                UpdEve StrEnc(EventList(1), StrMem1, NameR(0, Resin))
                 For I = 0 To NumTopR
                     If I = Resin Then
-                        UpdEve StrEnc(NameR(2, I), "&Mem1", NameR(0, Resin))
+                        UpdEve StrEnc(NameR(2, I), StrMem1, NameR(0, Resin))
                     End If
                 Next I
                 Call ResRefresh
@@ -161,4 +161,23 @@ Dim Resin As Integer, TRes%, I As Integer
     End If
     Call CheckRes
 End Sub
+
+Private Function showde(ind As String) As String
+Dim NumR%, strI, strN, I%
+    NumR = ResNum(ind)
+    If NumR < 0 Then
+        showde = "点击研究项目显示描述" & vbCrLf & "点击'研究'按钮以开始研究": Exit Function
+        Else: showde = StrEnc(NameR(1, NumR), StrCrlf, vbCrLf) & vbCrLf & "消耗" & ResV(NumR) & "s" & ",研究时长" & ResT(NumR) & "s"
+    End If
+    If ResVI(1, NumR) <> "" Then
+        strI = Split(ResVI(0, NumR), "|")
+        strN = Split(ResVI(1, NumR), "|")
+        showde = showde & vbCrLf & "所需物品:"
+        For I = 0 To UBound(strN) - 1
+            showde = showde & vbCrLf & NameI(strI(I)) & ":" & strN(I)
+        Next I
+    End If
+    showde = ind & vbCrLf & showde
+End Function
+
 

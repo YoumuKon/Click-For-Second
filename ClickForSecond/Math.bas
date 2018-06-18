@@ -1,7 +1,7 @@
 Attribute VB_Name = "Math"
 Option Explicit
-Public Ts#, I%
-Public Function BuyCheck(Value As Double, money As Double) As Boolean
+Public Ts, I%
+Public Function BuyCheck(Value, money) As Boolean
     BuyCheck = False
     If money >= Value Then
         money = money - Value
@@ -9,20 +9,19 @@ Public Function BuyCheck(Value As Double, money As Double) As Boolean
     End If
 End Function
 
-Public Function NeedItemCheck(Item As String, Num As String) As Boolean
+Public Function NeedItemCheck(Item As String, num As String) As Boolean
 Dim strI, strN, I
     NeedItemCheck = True
     strI = Split(Item, "|")
-    strN = Split(Num, "|")
+    strN = Split(num, "|")
     For I = 0 To UBound(strI) - 1
-        NeedItemCheck = NeedItemCheck And (strN(I) >= NumTotalI(strI(I)))
+        NeedItemCheck = NeedItemCheck And (NumTotalI(strI(I)) >= strN(I))
         If NeedItemCheck = False Then Exit Function
     Next I
-    If NeedItemCheck Then
-        For I = 0 To UBound(strI) - 1
-            Call BuyCheck(CDbl(strN(I)), CDbl(NumTotalI(strI(I))))
-        Next I
-    End If
+    For I = 0 To UBound(strI) - 1
+        Call BuyCheck(CInt(strN(I)), NumTotalI(strI(I)))
+    Next I
+    Call refshop
 End Function
 
 Public Function bitHex(ByVal str$) As String

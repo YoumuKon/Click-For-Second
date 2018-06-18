@@ -55,32 +55,9 @@ Item.name_8-0=书籍整合
 Item.name_9-0=时间检测仪
 Item.name_10-0=高斯模糊转化仪
 #物品合成表
-Item.Crafting_0=1*3>8|
-Item.Crafting_1=0+2+3>9|21
-Item.Crafting_2=0+3+1*2>10|22
-#物品判定式(只能用单一研究解锁单一物品)
-Item.Need_0=0>0-0
-Item.Need_1=1>1-0
-Item.Need_2=2>2-0
-Item.Need_3=3>3-0
-Item.Need_4=4>4-0
-Item.Need_5=5>5-0
-Item.Need_6=6>6-0
-Item.Need_7=7>0-1
-Item.Need_8=8>1-1
-Item.Need_9=9>2-1
-Item.Need_10=10>3-1
-Item.Need_11=11>4-1
-Item.Need_12=12>5-1
-Item.Need_13=13>6-1
-Item.Need_14=14>0-2
-Item.Need_15=15>1-2
-Item.Need_16=16>2-2
-Item.Need_17=17>3-2
-Item.Need_18=18>4-2
-Item.Need_19=19>5-2
-Item.Need_20=20>6-2
-Item.Need_21=28>7-2
+Item.Crafting_0=1*3|
+Item.Crafting_1=0*1+2*1+3*1|21
+Item.Crafting_2=0*1+3*1+1*2|22
 #随机奖励类
 #消耗物类——直接使用
 Item.name_11-0=华莱士鸡腿
@@ -137,7 +114,7 @@ Research.time_7=35
 Research.needItem_7=
 Research.name_8=《江泽民文选》出版
 Research.tip_8=将《他改变了中国》升级为《江泽民文选》.&CL效率+50%.
-Research.event_9=《他改变了中国》已升级为《江泽民文选》.
+Research.event_8=《他改变了中国》已升级为《江泽民文选》.
 Research.cost_8=85
 Research.time_8=70
 Research.needItem_8=
@@ -256,7 +233,7 @@ Research.tip_27=在广场绘制时间法阵以供研究高级知识所需.&CL解锁高级研究.
 Research.event_27=时间法阵已描绘完毕.
 Research.cost_27=80000
 Research.time_27=6400
-Research.needItem_27=0*5+3*5+4*5+5*5+6*5+7*5+8*5+9*5
+Research.needItem_27=0*5+1*5+2*5+3*5+4*5+5*5+6*5+7*5+8*5+9*5
 #消耗物类
 Research.name_28=枸杞茶上市
 Research.tip_28=允许商店售卖枸杞茶.
@@ -308,13 +285,14 @@ Event.Normal_5=&U使用“&Mem1”技能;
 Event.Normal_6=&Mem1已建成.
 Event.Normal_7=成功制造&Mem1.
 Event.Normal_8=&Mem1制造失败.
+Event.Normal_9=一天过去了.
 #随机事件及描述
 Event.Random.Name_0=恶劣天气
-Event.Random.Tip_0=因恶劣天气影响, 现研究中研究完成时间后延&Mem1秒
-Event.Random.Probability_0=0.75
+Event.Random.Tip_0=因恶劣天气影响, 现研究中研究进度后延&Mem1秒
+Event.Random.Probability_0=0.3333
 Event.Random.Name_1=物品随邮附赠
 Event.Random.Tip_1=你从新收到的一封邮件里抽出了&Mem1
-Event.Random.Probability_1=0.025
+Event.Random.Probability_1=0.0250
 
 #以下是建筑
 Building.Name_0=天气观测站
