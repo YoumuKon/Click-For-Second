@@ -12,60 +12,48 @@ Dim IRR%
     Next IRR
 End Sub
 
-Public Function showde(Ind As String) As String
-Dim NumR%, strI, strN, I%
-    NumR = ResNum(Ind)
-    If NumR < 0 Then
-        showde = "点击研究项目显示描述" & vbCrLf & "点击'研究'按钮以开始研究": Exit Function
-        Else: showde = StrEnc(NameR(1, NumR), "&CL", vbCrLf) & vbCrLf & "消耗" & ResV(NumR) & "s" & ",研究时长" & ResT(NumR) & "s"
-    End If
-    strI = Split(ResVI(0, NumR), "|")
-    strN = Split(ResVI(1, NumR), "|")
-    If UBound(strN) > 0 Then
-        showde = showde & vbCrLf & "以及:"
-        For I = 0 To UBound(strN) - 1
-            showde = showde & " " & NameI(strI(I)) & ":" & strN(I)
-        Next I
-    End If
-    showde = Ind & vbCrLf & showde
-End Function
-
-Public Function ResNum(Ind As String) As Integer
+Public Function ResNum(ind As String) As Integer
 Dim IRM%
     ResNum = -1
     For IRM = 0 To NumTopR
-        If NameR(0, IRM) = Ind Then ResNum = IRM: Exit Function
+        If NameR(0, IRM) = ind Then ResNum = IRM: Exit Function
     Next IRM
 End Function
 
-Public Sub showWP(Ind As Integer)
-    If Ind >= 0 Then
-        Main.WorkPlace.Caption = WPevent(Ind + 1)
-        Select Case Ind
-            Case 0: ClickP = ClickP + 1
-            Case 1: ClickP = ClickP + 3
-            Case 2: ClickP = ClickP * 1.4
-            Case 3: ItemPST = ItemPST + 0.1
-        End Select
-        Else: Main.WorkPlace.Caption = "这是工作区"
-    End If
+Public Sub showWP(ind As Integer)
+    Select Case ind
+        Case 0: ClickP = 2 '1+1=2
+        Case 1: ClickP = 5 '2+3=5
+        Case 2: ClickP = 7 '5*1.4=7
+        Case 3: ItemPST = 1.1 '1+0.1=1.1
+    End Select
+    Main.WorkPlace.Caption = WPevent(ind + 1)
 End Sub
+
+Public Function checkWP() As Integer
+Dim I
+    For I = 0 To NumWPE
+        If Main.WorkPlace.Caption = WPevent(I) Then checkWP = I - 1
+    Next I
+End Function
 
 Public Sub CheckRes()
 Dim updateR As Boolean, I As Integer, J As Integer, strF, strI, strT, str1
 Dim CanUpd As Boolean
     updateR = False
     '判定：
-    CanUpd = True
     For I = 0 To NumTopRN
+        CanUpd = True
         Call Needcele(ResNeed(I), strF, strI, strT)
         For J = 0 To UBound(strF)
             If Not NumTotalR(strF(J)) Then CanUpd = False
         Next J
-        For J = 0 To UBound(strI)
-            str1 = Split(strI(J), "*")
-            If NumTotalI(str1(0)) < str1(1) Then CanUpd = False
-        Next J
+        If UBound(strI) >= 0 Then
+            For J = 0 To UBound(strI)
+                str1 = Split(strI(J), "*")
+                If NumTotalI(str1(0)) < str1(1) Then CanUpd = False
+            Next J
+        End If
         If CanUpd Then
             For J = 0 To UBound(strT)
                 If updCed(I) Then
@@ -79,11 +67,10 @@ nextJ:
             updCed(I) = True
         End If
     Next I
-    If NumTotalR(26) Then Call showWP(3): GoTo jumpWP
-    If NumTotalR(25) Then Call showWP(2): GoTo jumpWP
-    If NumTotalR(24) Then Call showWP(1): GoTo jumpWP
-    If NumTotalR(23) Then Call showWP(0): GoTo jumpWP
-jumpWP:
+    If NumTotalR(26) And checkWP() < 3 Then Call showWP(3)
+    If NumTotalR(25) And checkWP() < 2 Then Call showWP(2)
+    If NumTotalR(24) And checkWP() < 1 Then Call showWP(1)
+    If NumTotalR(23) And checkWP() < 0 Then Call showWP(0)
     '重复检查
     '优先级：已完成>进行中>未完成
     For I = 0 To NumTopR
@@ -94,7 +81,10 @@ jumpWP:
             ElseIf ResTI(0, I) Then NumTotalRN(I) = False
         End If
     Next I
-    '更新研究列表
-    If updateR Then Call ResRef: Call ResRefresh
+    '更新
+    If updateR Then
+        Call ResRef
+        Call ResRefresh
+    End If
 End Sub
 

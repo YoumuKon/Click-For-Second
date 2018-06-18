@@ -230,8 +230,8 @@ End Sub
 
 Private Sub Form_Load()
 Dim I%
-    '为防止编译后出现错误而设
-    'On Error Resume Next
+    '为防止编译后出现运行错误而设
+    On Error GoTo errorcheck
     If Dir("MainOption.ini") <> "" Then
         If FileLen("MainOption.ini") <> 0 Then
             Open "MainOption.ini" For Input As #1
@@ -241,20 +241,27 @@ Dim I%
         End If
     End If
     If ConfigA = "" Then
+        Do While True
         SettingF.Common.Filter = "配置文件(*.CFSconfig)|*.CFSconfig|全部文件(*.*)|*.*"
         SettingF.Common.ShowOpen
+        If SettingF.Common.FileName = "" Then MsgBox "第一次启动必须选择正确的配置文件!", vbCritical, "警告" Else Exit Do
+        Loop
         ConfigA = SettingF.Common.FileName
     End If
     If LangA = "" Then
+        Do While True
         SettingF.Common.Filter = "语言文件(*.CFSlang)|*.CFSlang|全部文件(*.*)|*.*"
         SettingF.Common.ShowOpen
+        If SettingF.Common.FileName = "" Then MsgBox "第一次启动必须选择正确的配置文件!", vbCritical, "警告" Else Exit Do
+        Loop
         LangA = SettingF.Common.FileName
     End If
     SettingF.ConfigAddress = ConfigA
     SettingF.LangAddress = LangA
     Call mainload
     '初始化
-    Ts = 0
+    OnlineTime = CDec(0)
+    Ts = CDec(0)
     EventS = ""
     Total = 0
     ClickP = 1
@@ -276,7 +283,6 @@ Dim I%
     Next I
     '默认设置
     ClickEB = False
-    Common.Filter = "保存文档(*.savesecond)|*.savesecond|全部文件(*.*)|*.*"
     Call showWP(-1)
     Call NumPer
     '默认研究
@@ -284,17 +290,32 @@ Dim I%
     NumTotalRN(23) = True
     '默认技能
     MnuSkill0.Enabled = True
-    '默认合成
-    Crafting(1, 0) = True
+    Exit Sub
+errorcheck:
+    If Err.Number <> 0 Then
+        Open "错误:" & Date & ".Warning" For Output As #1
+        Print #1, "错误代号:" & Err.Number
+        Print #1, "错误描述:" & Err.Description
+        Print #1, "错误原因:" & Err.Source
+        Close #1
+    End If
+    Resume Next
 End Sub
 
 Private Sub Clear_Click()
     EventS = ""
 End Sub
 
-Private Sub Form_Unload(Cancel As Integer)
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+Dim isave
     Close
-    End
+    isave = MsgBox("在退出前存档吗?", vbYesNoCancel, "存档请求")
+    If UnloadMode >= vbAppWindows Then End
+    Select Case isave
+        Case vbYes: Call saveF: End
+        Case vbNo: End
+        Case vbCancel: Cancel = -1
+    End Select
 End Sub
 
 Private Sub GiveAwaySecond_Click()
@@ -306,7 +327,7 @@ Dim tsN As Double
             Ts = 0
             Total = Ts
             MsgBox "续命成功!"
-            UpdEve StrEnc(StrEnc(EventList(2), "&U", UserN), "&Mem1", tsN)
+            UpdEve StrEnc(StrEnc(EventList(2), StrUser, UserN), StrMem1, tsN)
             Else: MsgBox "秒数不能为0!", 16, "秒数不够"
         End If
     End If
@@ -326,7 +347,7 @@ End Sub
 Private Sub ItemList_Click()
 Dim I%
     For I = 0 To NumTopI
-        UpdEve StrEnc(StrEnc(EventList(4), "&Mem1", NameI(I)), "&Mem2", NumTotalI(I))
+        UpdEve StrEnc(StrEnc(EventList(4), StrMem1, NameI(I)), StrMem2, NumTotalI(I))
     Next I
 End Sub
 
@@ -367,10 +388,16 @@ Private Sub ShotlistY_Click()
 End Sub
 
 Private Sub Timer1_Timer()
-    sper = 0
     Call NumPer
     Ts = Ts + sper
     Total = str(Ts)
+    OnlineTime = OnlineTime + 1
+    If OnlineTime Mod 86400 = 0 Then
+        UpdEve StrEnc(EventList(9), StrCrLf, vbCrLf)
+        Call RunRandomE(0)
+        Call RunRandomE(1)
+    End If
+    Debug.Print OnlineTime
 End Sub
 
 Private Sub User_Change()
@@ -393,11 +420,12 @@ End Sub
 Private Sub WorkPlace_Click()
     Ts = Ts + ClickP
     Total = Ts
-    If ClickEB Then UpdEve StrEnc(StrEnc(EventList(0), "&U", UserN), "&Mem1", ClickP)
+    If ClickEB Then UpdEve StrEnc(StrEnc(EventList(0), StrUser, UserN), StrMem1, ClickP)
 End Sub
 
 Private Sub WorkPlace_DblClick()
     Ts = Ts + ClickP
     Total = Ts
-    If ClickEB Then UpdEve StrEnc(StrEnc(EventList(0), "&U", UserN), "&Mem1", ClickP)
+    If ClickEB Then UpdEve StrEnc(StrEnc(EventList(0), StrUser, UserN), StrMem1, ClickP)
 End Sub
+

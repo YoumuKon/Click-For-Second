@@ -47,32 +47,60 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Sub Craftde_Change()
-
-End Sub
-
 Private Sub CraftList_Click()
     Craftde = ShowCraftde(CraftList.List(CraftList.ListIndex))
 End Sub
 
-Private Sub Form_Load()
-    Call ResCraft
+Private Sub Craftstart_Click()
+Dim CN As Integer, str1, str2, strI, strN
+    If CraftList.ListIndex = -1 Then
+        MsgBox "请选择目标物品!", vbCritical, "未选择物品"
+        Else
+        CN = CraftNum(CraftList.List(CraftList.ListIndex))
+        str1 = Split(Crafting(0, CN), "+")
+        For I = 0 To UBound(str1)
+            str2 = Split(str1(I), "*")
+            strI = strI & str2(0) & "|"
+            strN = strN & str2(1) & "|"
+        Next I
+        If NeedItemCheck(CStr(strI), CStr(strN)) Then
+            If ProCele(CraftP) Then
+                NumTotalI(1 + SellI + CN) = NumTotalI(1 + SellI + CN) + 1
+                Call UpdEve(StrEnc(EventList(7), StrMem1, NameI(1 + SellI + CN)))
+                Else: UpdEve (StrEnc(EventList(8), StrMem1, NameI(1 + SellI + CN)))
+            End If
+            Else: MsgBox "所需材料不足!", 16, "材料不足"
+        End If
+    End If
+    Call CraftList_Click
 End Sub
 
-Private Function ShowCraftde(Ind As String)
-Dim NumR%, strI, strN, I%
-    NumC = -1
-    For I = 0 To NumTopI
-        If NameII(0, I) = Ind Then NumC = I: Exit Function
-    Next I
+Private Sub Form_Load()
+    Call RefCraft
+End Sub
+
+Public Function ShowCraftde(ind As String) As String
+Dim NumC%, str1, str2, I%
+    NumC = CraftNum(ind)
     If NumC < 0 Then ShowCraftde = "点击物品显示所需材料" & vbCrLf & "点击 '制作'按钮以开始制作": Exit Function
-    strI = Split(Crafting(0, NumC), "+")
-    strN = Split(ResVI(1, NumC), "*")
-    If UBound(strN) > 0 Then
-        ShowCraftde = ShowCraftde & vbCrLf & "以及:"
-        For I = 0 To UBound(strN) - 1
-            ShowCraftde = ShowCraftde & " " & NameI(strI(I)) & ":" & strN(I)
-        Next I
-    End If
-    ShowCraftde = Ind & vbCrLf & ShowCraftde
+    ShowCraftde = "现在共有" & NumTotalI(1 + SellI + NumC) & "个"
+    str1 = Split(Crafting(0, NumC), "+")
+    ShowCraftde = ShowCraftde & vbCrLf & "所需物品:"
+    For I = 0 To UBound(str1)
+        str2 = Split(str1(I), "*")
+        ShowCraftde = ShowCraftde & vbCrLf & NameI(str2(0)) & ":" & str2(1)
+    Next I
+    ShowCraftde = ind & vbCrLf & ShowCraftde
 End Function
+
+Public Sub RefCraft()
+Dim I%
+    CraftingF.CraftList.Clear
+    For I = 0 To NumTopC
+        If Crafting(1, I) <> "" Then
+            If NumTotalR(Crafting(1, I)) Then CraftingF.CraftList.AddItem NameII(0, I + SellI + 1)
+            Else: CraftingF.CraftList.AddItem NameII(0, I + SellI + 1)
+        End If
+    Next I
+End Sub
+

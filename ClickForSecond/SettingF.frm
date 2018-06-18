@@ -96,16 +96,15 @@ Private Sub ConfigAddress_DblClick()
 End Sub
 
 Private Sub Form_Load()
-    If Main.ClickEB Then ClickE.Value = 1
+    ClickE.Value = IIf(Main.ClickEB, 1, 0)
     LangAddress = LangA
     ConfigAddress = ConfigA
 End Sub
 
 Private Sub ButtonY_Click()
     If ClickE.Value = 1 Then Main.ClickEB = True Else: Main.ClickEB = False
-    ConfigA = ConfigAddress
-    LangA = LangAddress
-    Call loadC
+    If ConfigA <> ConfigAddress Then ConfigA = ConfigAddress: Call loadC
+    If LangA <> LangAddress Then LangA = LangAddress: Call loadC
     Unload Me
 End Sub
 
