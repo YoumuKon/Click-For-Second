@@ -17,7 +17,7 @@ Dim NumB%, strI, strN, I%
     NumB = BuildNum(ind)
     If NumB < 0 Then
         showBuildde = "点击建筑项目显示描述" & vbCrLf & "点击'建造'按钮以开始建造": Exit Function
-        Else: showBuildde = StrEnc(NameB(1, NumB), "&CL", vbCrLf) & vbCrLf & "消耗" & BuildV(NumB) & "s" & ",研究时长" & BuildT(NumB) & "s"
+        Else: showBuildde = StrEnc(NameB(1, NumB), StrCrlf, vbCrLf) & vbCrLf & "消耗" & BuildV(NumB) & "s" & ",研究时长" & BuildT(NumB) & "s"
     End If
     strI = Split(BuildVI(0, NumB), "|")
     strN = Split(BuildVI(1, NumB), "|")
