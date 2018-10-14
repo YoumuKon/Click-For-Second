@@ -12,6 +12,11 @@ Begin VB.Form Main
    MinButton       =   0   'False
    ScaleHeight     =   8385
    ScaleWidth      =   9045
+   Begin VB.Timer ms 
+      Interval        =   1
+      Left            =   720
+      Top             =   2280
+   End
    Begin VB.CommandButton NBuild 
       Caption         =   "建筑管理"
       Enabled         =   0   'False
@@ -77,7 +82,7 @@ Begin VB.Form Main
       _ExtentY        =   847
       _Version        =   393216
    End
-   Begin VB.Timer Timer1 
+   Begin VB.Timer perSecond 
       Interval        =   1000
       Left            =   1440
       Top             =   2280
@@ -229,9 +234,9 @@ Private Sub CopyE_Click()
 End Sub
 
 Private Sub Form_Load()
-Dim I%
-    '为防止编译后出现运行错误而设
+Dim I%, exitb As Byte
     On Error GoTo errorcheck
+    Call Rediming(0)
     If Dir("MainOption.ini") <> "" Then
         If FileLen("MainOption.ini") <> 0 Then
             Open "MainOption.ini" For Input As #1
@@ -244,7 +249,8 @@ Dim I%
         Do While True
         SettingF.Common.Filter = "配置文件(*.CFSconfig)|*.CFSconfig|全部文件(*.*)|*.*"
         SettingF.Common.ShowOpen
-        If SettingF.Common.FileName = "" Then MsgBox "第一次启动必须选择正确的配置文件!", vbCritical, "警告" Else Exit Do
+        If SettingF.Common.FileName = "" Then exitb = MsgBox("第一次启动必须选择正确的配置文件!", vbCritical + vbOKCancel, "警告") Else Exit Do
+        If exitb = vbCancel Then End
         Loop
         ConfigA = SettingF.Common.FileName
     End If
@@ -252,7 +258,8 @@ Dim I%
         Do While True
         SettingF.Common.Filter = "语言文件(*.CFSlang)|*.CFSlang|全部文件(*.*)|*.*"
         SettingF.Common.ShowOpen
-        If SettingF.Common.FileName = "" Then MsgBox "第一次启动必须选择正确的配置文件!", vbCritical, "警告" Else Exit Do
+        If SettingF.Common.FileName = "" Then exitb = MsgBox("第一次启动必须选择正确的配置文件!", vbCritical + vbOKCancel, "警告") Else Exit Do
+        If exitb = vbCancel Then End
         Loop
         LangA = SettingF.Common.FileName
     End If
@@ -297,6 +304,7 @@ errorcheck:
         Print #1, "错误代号:" & Err.Number
         Print #1, "错误描述:" & Err.Description
         Print #1, "错误原因:" & Err.Source
+        Print #1, "----------------------------------------------------------------------------"
         Close #1
     End If
     Resume Next
@@ -367,6 +375,12 @@ Private Sub MnuSkill0_Click()
     RunSkill 0
 End Sub
 
+Private Sub ms_Timer()
+    Call NumPer
+    Ts = Ts + sper / 1000
+    Total = str(Ts)
+End Sub
+
 Private Sub NBuild_Click()
     BuildingF.Show
 End Sub
@@ -387,12 +401,9 @@ Private Sub ShotlistY_Click()
     SecondList.Show
 End Sub
 
-Private Sub Timer1_Timer()
-    Call NumPer
-    Ts = Ts + sper
-    Total = str(Ts)
+Private Sub perSecond_Timer()
     OnlineTime = OnlineTime + 1
-    If OnlineTime Mod 86400 = 0 Then
+    If OnlineTime Mod 3600 = 0 Then
         UpdEve StrEnc(EventList(9), StrCrLf, vbCrLf)
         Call RunRandomE(0)
         Call RunRandomE(1)

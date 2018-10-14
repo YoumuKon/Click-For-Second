@@ -87,7 +87,9 @@ Dim str1 As String, str2
     Open FileA For Input As #1
     Do While Not EOF(1)
         Line Input #1, str1
-        If Left(str1, 1) <> "#" And str1 <> "" Then
+        str2 = Split(str1, "#", 2)
+        str1 = str2(1)
+        If str1 <> "" Then
             str2 = Split(str1, "=", 2)
             If str2(0) = Name Then
                 loadLang = str2(1)
@@ -102,14 +104,6 @@ Public Sub loadC()
 Dim I%, str1 As String
     CFSVersion = loadLang("Version", ConfigA)
     CraftP = loadLang("CraftingProbability", ConfigA)
-    '数组初始化
-    ReDim updCed(MaxNum): ReDim updPSed(1, MaxNum): ReDim updSkill(MaxNum)
-    ReDim NameI(MaxNum): ReDim NameII(2, MaxNum): ReDim ItemPS(MaxNum)
-    ReDim ResV(MaxNum): ReDim ResT(MaxNum): ReDim ResTI(1, MaxNum): ReDim ResVI(1, MaxNum)
-    ReDim NumTotalI(MaxNum): ReDim Reventlist(2, MaxNum): ReDim EventList(MaxNum): ReDim Reventlist(2, MaxNum)
-    ReDim NumTotalRN(MaxNum): ReDim NumTotalR(MaxNum): ReDim NameR(2, MaxNum): ReDim NameS(1, MaxNum)
-    ReDim BuildV(MaxNum): ReDim BuildT(MaxNum): ReDim NumTotalBN(MaxNum): ReDim NumTotalB(MaxNum): ReDim NameB(1, MaxNum): ReDim BuildTI(1, MaxNum): ReDim BuildVI(1, MaxNum)
-    ReDim ResNeed(MaxNum): ReDim Crafting(1, MaxNum): ReDim WPevent(MaxNum): ReDim ItemV(MaxNum)
     Call loadL
 End Sub
 

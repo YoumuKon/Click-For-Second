@@ -56,13 +56,10 @@ Dim CanUpd As Boolean
         End If
         If CanUpd Then
             For J = 0 To UBound(strT)
-                If updCed(I) Then
-                    GoTo nextJ
-                    Else
-                    NumTotalRN(strT(J)) = True
+                If Not updCed(I) Then
+                    RO(strT(J)).Status = CFSIsable
                     updateR = True
                 End If
-nextJ:
             Next J
             updCed(I) = True
         End If
@@ -71,16 +68,6 @@ nextJ:
     If NumTotalR(25) And checkWP() < 2 Then Call showWP(2)
     If NumTotalR(24) And checkWP() < 1 Then Call showWP(1)
     If NumTotalR(23) And checkWP() < 0 Then Call showWP(0)
-    '重复检查
-    '优先级：已完成>进行中>未完成
-    For I = 0 To NumTopR
-        If NumTotalR(I) Then
-            ResTI(0, I) = False
-            ResTI(1, I) = 0
-            NumTotalRN(I) = False
-            ElseIf ResTI(0, I) Then NumTotalRN(I) = False
-        End If
-    Next I
     '更新
     If updateR Then
         Call ResRef

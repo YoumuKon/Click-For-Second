@@ -1,19 +1,37 @@
 Attribute VB_Name = "PublicFS"
 Option Explicit
+'自定义类型
+Public Type ResearchObject
+    Name As String
+    Description As String
+    Valve As Long
+    Time As Long
+    Event As String
+    NeedItem As Variant
+    NeedItemNumber As Variant
+    TimeNow As Long
+    Status As Statuinfo
+End Type
+'研究状态枚举
+Enum Statuinfo
+    CFSIsDone = -1
+    CFSIsDoing = 0
+    CFSIsable = 1
+End Enum
 '一切东西的最大数量
 Public Const MaxNum = 1926
-'各符号常量
+'各常量
 Public Const StrMem1 = "&Mem1", StrMem2 = "&Mem2", StrUser = "&U", StrCrLf = "&CL"
 '版本号/商品数量/工作区事件数/在线时间
 Public CFSVersion, SellI, NumWPE, OnlineTime
-'物品种类总数/研究总数/技能总数/建筑种类总数/随机事件总数/通用事件总数/合成物总数/研究关系式总数
-Public NumTopI, NumTopR, NumTopS, NumTopB, NumTopRevent, NumTopE, NumTopC, NumTopRN
+'物品种类总数/研究总数/技能总数/建筑种类总数/随机事件总数/通用事件总数/合成物总数/研究关系式总数/自动物品数
+Public NumTopI, NumTopR, NumTopS, NumTopB, NumTopRevent, NumTopE, NumTopC, NumTopRN, NumTopAuto
 '研究解锁判定/用户名/效率升级判定/枪毙名单/技能解锁判定
 Public updCed() As Boolean, UserN As String, updPSed() As Boolean, Shotlist(1, 9), updSkill() As Boolean
 '商品费用/点击续命秒数/商品现名/商品各阶段名/商品效率/商品总效率
 Public ItemV() As Double, ClickP As Integer, NameI() As String, NameII() As String, ItemPS() As Double, ItemPST As Double
 '研究费用/研究时间/研究中+剩余时间/研究所需物品+数量
-Public ResV() As Double, ResT() As Double, ResTI(), ResVI() As String
+Public ResV() As Double, ResT() As Double, ResTI(), ResVI() As String, RO() As ResearchObject
 '物品数量/每秒续命秒数/通用事件总数/随机事件+提醒+概率/工作区提醒
 Public NumTotalI(), sper As Double, EventList() As String, Reventlist(), WPevent() As String
 '研究解锁状态/研究完成状态/研究名+描述+特殊提醒/技能名+特殊提醒/合成表+合成物判定情况/合成成功概率/研究关系式
@@ -22,6 +40,21 @@ Public NumTotalRN() As Boolean, NumTotalR() As Boolean, NameR() As String, NameS
 Public BuildV() As Double, BuildT() As Double, NumTotalBN() As Boolean, NumTotalB() As Boolean, NameB(), BuildTI(), BuildVI()
 '各大配置文件地址
 Public ConfigA As String, LangA As String
+'传说中的FileSystemObject
+Set fs = CreateObject("Scripting.FileSystemObject")
+
+Public Sub Rediming(ind As Byte)
+    Select Case ind
+        Case 0: '数组初始化
+        ReDim updCed(MaxNum): ReDim updPSed(2, MaxNum): ReDim updSkill(MaxNum): ReDim NameS(1, MaxNum)
+        ReDim NameI(MaxNum): ReDim NameII(2, MaxNum): ReDim ItemPS(MaxNum)
+        ReDim NumTotalI(MaxNum): ReDim Reventlist(2, MaxNum): ReDim EventList(MaxNum): ReDim Reventlist(2, MaxNum)
+        ReDim NumTotalRN(MaxNum): ReDim NumTotalR(MaxNum): ReDim NameR(2, MaxNum): ReDim ResV(MaxNum): ReDim ResT(MaxNum): ReDim ResTI(1, MaxNum): ReDim ResVI(1, MaxNum)
+        ReDim BuildV(MaxNum): ReDim BuildT(MaxNum): ReDim NumTotalBN(MaxNum): ReDim NumTotalB(MaxNum): ReDim NameB(1, MaxNum): ReDim BuildTI(1, MaxNum): ReDim BuildVI(1, MaxNum)
+        ReDim ResNeed(MaxNum): ReDim Crafting(1, MaxNum): ReDim WPevent(MaxNum): ReDim ItemV(MaxNum)
+        Case 1:
+    End Select
+End Sub
 
 Public Sub Refe()
 Dim iR%
@@ -46,15 +79,15 @@ End Sub
 
 Public Sub ResRefresh()
     '解锁区
-    If NumTotalR(0) Then ShopF.BuyI(0).Enabled = True
-    If NumTotalR(1) Then ShopF.BuyI(1).Enabled = True
-    If NumTotalR(2) Then ShopF.BuyI(2).Enabled = True
-    If NumTotalR(3) Then ShopF.BuyI(3).Enabled = True
-    If NumTotalR(4) Then ShopF.BuyI(4).Enabled = True
-    If NumTotalR(5) Then ShopF.BuyI(5).Enabled = True
-    If NumTotalR(6) Then ShopF.BuyI(6).Enabled = True
-    If NumTotalR(28) Then ShopF.BuyI(7).Enabled = True
-    If NumTotalR(30) Then Main.NBuild.Enabled = True
+    If RO(0).Status = CFSIsDone Then ShopF.BuyI(0).Enabled = True
+    If RO(1).Status = CFSIsDone Then ShopF.BuyI(1).Enabled = True
+    If RO(2).Status = CFSIsDone Then ShopF.BuyI(2).Enabled = True
+    If RO(3).Status = CFSIsDone Then ShopF.BuyI(3).Enabled = True
+    If RO(4).Status = CFSIsDone Then ShopF.BuyI(4).Enabled = True
+    If RO(5).Status = CFSIsDone Then ShopF.BuyI(5).Enabled = True
+    If RO(6).Status = CFSIsDone Then ShopF.BuyI(6).Enabled = True
+    If RO(28).Status = CFSIsDone Then ShopF.BuyI(7).Enabled = True
+    If RO(29).Status = CFSIsDone Then Main.NBuild.Enabled = True
     '升级区
     If NumTotalR(0) And NumTotalR(7) And Not updPSed(0, 0) Then _
     NameI(0) = NameII(1, 0): ItemPS(0) = 1.5: updPSed(0, 0) = True
@@ -82,8 +115,8 @@ Public Sub ResRefresh()
     NameI(4) = NameII(2, 4): ItemPS(4) = 2.25: updPSed(1, 4) = True
     If NumTotalR(5) And NumTotalR(18) And Not updPSed(1, 5) Then _
     NameI(5) = NameII(2, 5): ItemPS(5) = 2.25: updPSed(1, 5) = True
-    If NumTotalR(5) And NumTotalR(19) And Not updPSed(1, 6) Then _
-    NameI(5) = NameII(2, 6): ItemPS(6) = 2.25: updPSed(1, 6) = True
+    If NumTotalR(6) And NumTotalR(19) And Not updPSed(1, 6) Then _
+    NameI(6) = NameII(2, 6): ItemPS(6) = 2.25: updPSed(1, 6) = True
     Call refshop
     Call CraftingF.RefCraft
 End Sub
