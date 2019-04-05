@@ -98,8 +98,7 @@ Dim I%
     CraftingF.CraftList.Clear
     For I = 0 To NumTopC
         If Crafting(1, I) <> "" Then
-            If NumTotalR(Crafting(1, I)) Then CraftingF.CraftList.AddItem NameII(0, I + SellI + 1)
-            Else: CraftingF.CraftList.AddItem NameII(0, I + SellI + 1)
+            If RO(Crafting(1, I)).Status = CFSisdone Then CraftingF.CraftList.AddItem NameII(0, I + SellI + 1)
         End If
     Next I
 End Sub

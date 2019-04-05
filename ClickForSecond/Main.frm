@@ -9,7 +9,6 @@ Begin VB.Form Main
    ClientWidth     =   9045
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
-   MinButton       =   0   'False
    ScaleHeight     =   8385
    ScaleWidth      =   9045
    Begin VB.Timer ms 
@@ -235,6 +234,8 @@ End Sub
 
 Private Sub Form_Load()
 Dim I%, exitb As Byte
+    '传说中的FileSystemObject
+    Set fs = CreateObject("Scripting.FileSystemObject")
     On Error GoTo errorcheck
     Call Rediming(0)
     If Dir("MainOption.ini") <> "" Then
@@ -280,9 +281,7 @@ Dim I%, exitb As Byte
         ItemPS(I) = 1
     Next I
     For I = 0 To NumTopR
-        NumTotalR(I) = False
-        ResTI(0, I) = False
-        NumTotalRN(I) = False
+        RO(I).Status = CFSnone
     Next I
     For I = 0 To 9
         Shotlist(0, I) = "待上榜"
@@ -293,21 +292,14 @@ Dim I%, exitb As Byte
     Call showWP(-1)
     Call NumPer
     '默认研究
-    NumTotalRN(0) = True
-    NumTotalRN(23) = True
+    RO(0).Status = CFSisable
+    RO(23).Status = CFSisable
     '默认技能
     MnuSkill0.Enabled = True
     Exit Sub
 errorcheck:
-    If Err.Number <> 0 Then
-        Open "错误:" & Date & ".Warning" For Output As #1
-        Print #1, "错误代号:" & Err.Number
-        Print #1, "错误描述:" & Err.Description
-        Print #1, "错误原因:" & Err.Source
-        Print #1, "----------------------------------------------------------------------------"
-        Close #1
-    End If
-    Resume Next
+    Call Errlog(Err.Number)
+    Resume
 End Sub
 
 Private Sub Clear_Click()

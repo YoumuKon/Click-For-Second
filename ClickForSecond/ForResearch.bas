@@ -6,17 +6,18 @@ Dim IRR%
     ResearchF.Resed.Clear
     ResearchF.Resable.Clear
     For IRR = 0 To NumTopR
-        If ResTI(0, IRR) Then ResearchF.Resing.AddItem NameR(0, IRR)
-        If NumTotalRN(IRR) Then ResearchF.Resable.AddItem NameR(0, IRR)
-        If NumTotalR(IRR) Then ResearchF.Resed.AddItem NameR(0, IRR)
+        Select Case RO(IRR).Status
+        Case CFSisdoing: ResearchF.Resing.AddItem RO(IRR).Name
+        Case CFSisable: ResearchF.Resable.AddItem RO(IRR).Name
+        Case CFSisdone: ResearchF.Resed.AddItem RO(IRR).Name
     Next IRR
 End Sub
 
-Public Function ResNum(ind As String) As Integer
+Public Function ResNum(strr As String) As Integer
 Dim IRM%
     ResNum = -1
     For IRM = 0 To NumTopR
-        If NameR(0, IRM) = ind Then ResNum = IRM: Exit Function
+        If RO(IRM).Name = strr Then ResNum = IRM: Exit Function
     Next IRM
 End Function
 
@@ -46,7 +47,7 @@ Dim CanUpd As Boolean
         CanUpd = True
         Call Needcele(ResNeed(I), strF, strI, strT)
         For J = 0 To UBound(strF)
-            If Not NumTotalR(strF(J)) Then CanUpd = False
+            If RO(strF(J)).Status <> CFSisdone Then CanUpd = False
         Next J
         If UBound(strI) >= 0 Then
             For J = 0 To UBound(strI)
@@ -57,17 +58,18 @@ Dim CanUpd As Boolean
         If CanUpd Then
             For J = 0 To UBound(strT)
                 If Not updCed(I) Then
-                    RO(strT(J)).Status = CFSIsable
+                    RO(strT(J)).Status = CFSisable
                     updateR = True
                 End If
             Next J
             updCed(I) = True
         End If
     Next I
-    If NumTotalR(26) And checkWP() < 3 Then Call showWP(3)
-    If NumTotalR(25) And checkWP() < 2 Then Call showWP(2)
-    If NumTotalR(24) And checkWP() < 1 Then Call showWP(1)
-    If NumTotalR(23) And checkWP() < 0 Then Call showWP(0)
+    If RO(26).Status = CFSisdone And checkWP() < 3 Then Call showWP(3)
+        ElseIf RO(25).Status = CFSisdone And checkWP() < 2 Then Call showWP(2)
+        ElseIf RO(24).Status = CFSisdone And checkWP() < 1 Then Call showWP(1)
+        ElseIf RO(23).Status = CFSisdone And checkWP() < 0 Then Call showWP(0)
+    End If
     '¸üÐÂ
     If updateR Then
         Call ResRef

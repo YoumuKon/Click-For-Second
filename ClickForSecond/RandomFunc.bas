@@ -26,7 +26,7 @@ Dim I%, REnum1, REnum2
         Case 0:
             REnum1 = Int((3600 + 1) * Rnd)
             For I = ResearchF.Resing.ListCount - 1 To 0 Step -1
-                If ResTI(1, I) > 0 Then ResTI(1, I) = ResTI(1, I) + REnum1
+                If RO(I).TimeNow > 0 Then O(I).TimeNow = O(I).TimeNow + REnum1
             Next I
         Case 1:
             REnum1 = Int((NumTopI + 1) * Rnd)

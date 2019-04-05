@@ -8,7 +8,6 @@ Begin VB.Form ResearchF
    ClientWidth     =   6225
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
-   MinButton       =   0   'False
    ScaleHeight     =   5865
    ScaleWidth      =   6225
    Begin VB.ListBox Resed 
@@ -103,7 +102,7 @@ Private Sub Resing_Click()
     If Resing.ListIndex = -1 Then
         Resde = showde("")
         Else: Resde = showde(Resing.List(Resing.ListIndex)) & vbCrLf & _
-        "现在还剩" & ResTI(1, ResNum(Resing.List(Resing.ListIndex))) & "s"
+        "现在还剩" & RO(ResNum(Resing.List(Resing.ListIndex))).TimeNow & "s"
     End If
     Resable.ListIndex = -1
     Resed.ListIndex = -1
@@ -120,12 +119,11 @@ Private Sub ResStart_Click()
 Dim resN As Integer, RV As Double
     If Resable.ListIndex = -1 Then
         MsgBox "请选择研究项目!", vbCritical, "未选择研究"
-        Else: resN = ResNum(Resable.List(Resable.ListIndex)): RV = ResV(resN)
+        Else: resN = ResNum(Resable.List(Resable.ListIndex)): RV = RO(resN).Valve
         If BuyCheck(RV, Ts) Then
-            If NeedItemCheck(ResVI(0, resN), ResVI(1, resN)) Then
-                NumTotalRN(resN) = False
-                ResTI(0, resN) = True
-                ResTI(1, resN) = ResT(resN)
+            If NeedItemCheck(RO(resN).NeedItem, RO(resN).NeedItemNumber) Then
+                RO(resN).Status = CFSisdoing
+                RO(resN).TimeNow = RO(resN).Time
                 Resing.AddItem Resable.List(Resable.ListIndex)
                 Resable.RemoveItem Resable.ListIndex
                 Else: MsgBox "所需材料不足!", 16, "材料不足"
@@ -136,26 +134,25 @@ Dim resN As Integer, RV As Double
 End Sub
 
 Private Sub Timer1_Timer()
-Dim Resin As Integer, TRes%, I As Integer
+Dim Resin As Integer, TRes%, i As Integer
     If Resing.ListCount <> 0 Then
         For TRes = Resing.ListCount - 1 To 0 Step -1
             Resin = -1
             Do While Resin = -1
                 Resin = ResNum(Resing.List(TRes))
             Loop
-            If ResTI(1, Resin) = 0 Then
-                ResTI(0, Resin) = False
-                NumTotalR(Resin) = True
-                Resed.AddItem NameR(0, Resin)
+            If RO(Resin).TimeNow = 0 Then
+                RO(Resin).Status = CFSisdone
+                Resed.AddItem RO(Resin).Name
                 Resing.RemoveItem TRes
-                UpdEve StrEnc(EventList(1), StrMem1, NameR(0, Resin))
-                For I = 0 To NumTopR
-                    If I = Resin Then
-                        UpdEve StrEnc(NameR(2, I), StrMem1, NameR(0, Resin))
+                UpdEve StrEnc(EventList(1), StrMem1, RO(Resin).Name)
+                For i = 0 To NumTopR
+                    If i = Resin Then
+                        UpdEve StrEnc(RO(Resin).Event, StrMem1, RO(Resin).Name)
                     End If
-                Next I
+                Next i
                 Call ResRefresh
-                ElseIf ResTI(1, Resin) > 0 Then ResTI(1, Resin) = ResTI(1, Resin) - 1
+                ElseIf RO(Resin).TimeNow > 0 Then RO(Resin).TimeNow = RO(Resin).TimeNow - 1
             End If
         Next TRes
     End If
@@ -163,19 +160,19 @@ Dim Resin As Integer, TRes%, I As Integer
 End Sub
 
 Private Function showde(ind As String) As String
-Dim NumR%, strI, strN, I%
+Dim NumR%, strI, strN, i%
     NumR = ResNum(ind)
     If NumR < 0 Then
         showde = "点击研究项目显示描述" & vbCrLf & "点击'研究'按钮以开始研究": Exit Function
-        Else: showde = StrEnc(NameR(1, NumR), StrCrlf, vbCrLf) & vbCrLf & "消耗" & ResV(NumR) & "s" & ",研究时长" & ResT(NumR) & "s"
+        Else: showde = StrEnc(RO(NumR).Description, StrCrLf, vbCrLf) & vbCrLf & "消耗" & RO(NumR).Valve & "s" & ",研究时长" & RO(NumR).Time & "s"
     End If
-    If ResVI(1, NumR) <> "" Then
-        strI = Split(ResVI(0, NumR), "|")
-        strN = Split(ResVI(1, NumR), "|")
+    If RO(NumR).NeedItem <> "" Then
+        strI = Split(RO(NumR).NeedItem, "|")
+        strN = Split(RO(NumR).NeedItemNumber, "|")
         showde = showde & vbCrLf & "所需物品:"
-        For I = 0 To UBound(strN) - 1
-            showde = showde & vbCrLf & NameI(strI(I)) & ":" & strN(I)
-        Next I
+        For i = 0 To UBound(strN) - 1
+            showde = showde & vbCrLf & NameI(strI(i)) & ":" & strN(i)
+        Next i
     End If
     showde = ind & vbCrLf & showde
 End Function

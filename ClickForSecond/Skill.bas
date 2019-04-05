@@ -14,8 +14,8 @@ Dim RunST%, ST%, num, succeed%
                     ShopF.NumI(7) = "目前共" & NumTotalI(7) & "个"
                     For RunST = ResearchF.Resing.ListCount - 1 To 0 Step -1
                         ST = ResNum(ResearchF.Resing.List(RunST))
-                        If ResTI(1, ST) > 0 Then ResTI(1, ST) = ResTI(1, ST) - 60 * num
-                        If ResTI(1, ST) < 0 Then ResTI(1, ST) = 0
+                        If RO(ST).TimeNow > 0 Then RO(ST).TimeNow = RO(ST).TimeNow - 60 * num
+                        If RO(ST).TimeNow < 0 Then RO(ST).TimeNow = 0
                         OnlineTime = OnlineTime + 60 * num
                     Next RunST
                     succeed = 0

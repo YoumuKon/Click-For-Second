@@ -7,17 +7,17 @@ Dim boo() As Integer, stuff As String, IRS%
     ResSave = ""
     stuff = ""
     For IRS = 0 To NumTopR
-        boo(IRS) = -NumTotalR(IRS)
+        boo(IRS) = -(RO(IRS).Status = CFSisdone)
         ResSave = ResSave & boo(IRS)
     Next IRS
     For IRS = 0 To NumTopR
-        boo(IRS) = -ResTI(0, IRS)
+        boo(IRS) = -(RO(IRS).Status = CFSisdoing)
         stuff = stuff & boo(IRS)
     Next IRS
     ResSave = bitHex(ResSave) & "+" & bitHex(stuff)
     stuff = ""
     For IRS = 0 To NumTopR
-        boo(IRS) = -NumTotalRN(IRS)
+        boo(IRS) = -(RO(IRS).Status = CFSisable)
         stuff = stuff & boo(IRS)
     Next IRS
     ResSave = ResSave & "+" & bitHex(stuff)
@@ -38,7 +38,7 @@ Dim ResHex As String, ISa As Integer
     Next ISa
     Print #1, ResHex & "|";
     For ISa = 0 To NumTopR
-        Print #1, ResTI(1, ISa) & "|";
+        Print #1, RO(ISa).TimeNow & "|";
     Next ISa
     Print #1, OnlineTime & "|";
     Print #1, CFSVersion & "|";
@@ -47,8 +47,8 @@ Dim ResHex As String, ISa As Integer
 End Sub
 
 Public Sub loadF()
-Dim str As String, stuffstr, bitR, iL As Integer, ResTIstuff() As Boolean
-    ReDim ResTIstuff(NumTopR)
+Dim str As String, stuffstr, bitR, I As Integer, ResStuff() As Boolean
+    ReDim ResStuff(NumTopR)
     Main.Common.Filter = "保存文档(*.savesecond)|*.savesecond"
     Main.Common.ShowOpen
     If Main.Common.FileName = "" Then Exit Sub Else
@@ -63,17 +63,25 @@ Dim str As String, stuffstr, bitR, iL As Integer, ResTIstuff() As Boolean
     '末尾-版本号(不使用)
     Main.User = stuffstr(0)
     Ts = CDec(stuffstr(1))
-    For iL = 0 To NumTopI
+    For I = 0 To NumTopI
         NumTotalI(iL) = stuffstr(iL + 2)
-    Next iL
+    Next I
     bitR = Split(stuffstr(NumTopI + 3), "+", 3)
-    Call bitBoo(hexBit(bitR(0)), NumTotalR())
-    Call bitBoo(hexBit(bitR(1)), ResTIstuff())
-    Call bitBoo(hexBit(bitR(2)), NumTotalRN())
-    For iL = 0 To NumTopR
-        ResTI(0, iL) = ResTIstuff(iL)
-        ResTI(1, iL) = stuffstr(iL + NumTopI + 4)
-    Next iL
+    Call bitBoo(hexBit(bitR(0)), ResStuff())
+    For I = 0 To NumTopR
+        If ResStuff(I) Then RO(I).Status = CFSisdone
+    Next I
+    Call bitBoo(hexBit(bitR(1)), ResStuff())
+    For I = 0 To NumTopR
+        If ResStuff(I) Then RO(I).Status = CFSisdoing
+    Next I
+    Call bitBoo(hexBit(bitR(2)), ResStuff())
+    For I = 0 To NumTopR
+        If ResStuff(I) Then RO(I).Status = CFSisable
+    Next I
+    For I = 0 To NumTopR
+        RO(I).TimeNow = stuffstr(iL + NumTopI + 4)
+    Next I
     OnlineTime = CDec(stuffstr(NumTopI + NumTopR + 5))
     Call Refe
     Call ResRef
@@ -87,13 +95,15 @@ Dim str1 As String, str2
     Open FileA For Input As #1
     Do While Not EOF(1)
         Line Input #1, str1
-        str2 = Split(str1, "#", 2)
-        str1 = str2(1)
         If str1 <> "" Then
-            str2 = Split(str1, "=", 2)
-            If str2(0) = Name Then
-                loadLang = str2(1)
-                Exit Do
+            str2 = Split(str1, "#", 2)
+            str1 = str2(0)
+            If str1 <> "" Then
+                str2 = Split(str1, "=", 2)
+                If str2(0) = Name Then
+                    loadLang = str2(1)
+                    Exit Do
+                End If
             End If
         End If
     Loop
@@ -120,26 +130,25 @@ Dim I%, J%, str1, str2
     NumTopI = I - 1: ReDim Preserve NameII(2, NumTopI): ReDim Preserve NameI(NumTopI)
     I = 0
     Do
-        NameR(0, I) = loadLang("Research.name_" & I, LangA)
-        NameR(1, I) = loadLang("Research.tip_" & I, LangA)
-        NameR(2, I) = loadLang("Research.event_" & I, LangA)
-        ResV(I) = loadLang("Research.cost_" & I, LangA)
-        ResT(I) = loadLang("Research.time_" & I, LangA)
-        str1 = Split(loadLang("Research.needItem_" & I, LangA), "+")
+        With RO(I)
+            .Name = loadLang("Research.name_" & I, LangA)
+            .Description = loadLang("Research.tip_" & I, LangA)
+            .Event = loadLang("Research.event_" & I, LangA)
+            .Valve = loadLang("Research.cost_" & I, ConfigA)
+            .Time = loadLang("Research.time_" & I, ConfigA)
+        End With
+        str1 = Split(loadLang("Research.needItem_" & I, ConfigA), "+")
         If UBound(str1) >= 1 Then
             For J = 0 To UBound(str1)
                 str2 = Split(str1(J), "*")
-                ResVI(0, I) = ResVI(0, I) & str2(0) & "|"
-                ResVI(1, I) = ResVI(1, I) & str2(1) & "|"
+                RO(I).NeedItem = RO(I).NeedItem & str2(0) & "|"
+                RO(I).NeedItemNumber = RO(I).NeedItemNumber & str2(1) & "|"
             Next J
         End If
         I = I + 1
-    Loop While loadLang("Research.time_" & I, LangA) <> ""
+    Loop While loadLang("Research.name_" & I, LangA) <> ""
     NumTopR = I - 1
-    ReDim Preserve NameR(2, NumTopR)
-    ReDim Preserve ResV(NumTopR)
-    ReDim Preserve ResT(NumTopR)
-    ReDim Preserve ResVI(1, NumTopR)
+    ReDim Preserve RO(NumTopR)
     I = 0
     Do
         NameS(0, I) = loadLang("Skill.name_" & I, LangA)
@@ -151,15 +160,15 @@ Dim I%, J%, str1, str2
     Do
         EventList(I) = loadLang("Event.Normal_" & I, LangA)
         I = I + 1
-    Loop While loadLang("Event.Normal_" & I, LangA) <> ""
+    Loop While loadLang("Event.Normal_" & I, ConfigA) <> ""
     NumTopE = I - 1: ReDim Preserve EventList(NumTopE)
     I = 0
     Do
         NameB(0, I) = loadLang("Building.Name_" & I, LangA)
         NameB(1, I) = loadLang("Building.Tip_" & I, LangA)
-        BuildV(I) = loadLang("Building.Cost_" & I, LangA)
-        BuildT(I) = loadLang("Building.Time_" & I, LangA)
-        str1 = Split(loadLang("Building.NeedItem_" & I, LangA), "+")
+        BuildV(I) = loadLang("Building.Cost_" & I, ConfigA)
+        BuildT(I) = loadLang("Building.Time_" & I, ConfigA)
+        str1 = Split(loadLang("Building.NeedItem_" & I, ConfigA), "+")
         If UBound(str1) >= 1 Then
             For J = 0 To UBound(str1)
                 str2 = Split(str1(J), "*")
@@ -168,7 +177,7 @@ Dim I%, J%, str1, str2
             Next J
         End If
         I = I + 1
-    Loop While loadLang("Building.Time_" & I, LangA) <> ""
+    Loop While loadLang("Building.Time_" & I, ConfigA) <> ""
     NumTopB = I - 1
     ReDim Preserve NameB(1, NumTopB)
     ReDim Preserve BuildV(NumTopB)
@@ -178,15 +187,15 @@ Dim I%, J%, str1, str2
     Do
         Reventlist(0, I) = loadLang("Event.Random.Name_" & I, LangA)
         Reventlist(1, I) = loadLang("Event.Random.Tip_" & I, LangA)
-        Reventlist(2, I) = loadLang("Event.Random.Probability_" & I, LangA)
+        Reventlist(2, I) = loadLang("Event.Random.Probability_" & I, ConfigA)
         I = I + 1
-    Loop While loadLang("Event.Random.Probability_" & I, LangA) <> ""
+    Loop While loadLang("Event.Random.Probability_" & I, ConfigA) <> ""
     NumTopRevent = I - 1: ReDim Preserve Reventlist(2, NumTopRevent)
     I = 0
     Do
-        ItemV(I) = loadLang("Item.value_" & I, LangA)
+        ItemV(I) = loadLang("Item.value_" & I, ConfigA)
         I = I + 1
-    Loop While loadLang("Item.value_" & I, LangA) <> ""
+    Loop While loadLang("Item.value_" & I, ConfigA) <> ""
     SellI = I - 1: ReDim Preserve ItemV(SellI)
     I = 0
     Do
@@ -196,11 +205,11 @@ Dim I%, J%, str1, str2
     NumWPE = I - 1: ReDim Preserve WPevent(NumWPE)
     I = 0
     Do
-        str1 = Split(loadLang("Item.Crafting_" & I, LangA), "|")
+        str1 = Split(loadLang("Item.Crafting_" & I, ConfigA), "|")
         Crafting(0, I) = str1(0)
         Crafting(1, I) = str1(1)
         I = I + 1
-    Loop While loadLang("Item.Crafting_" & I, LangA) <> ""
+    Loop While loadLang("Item.Crafting_" & I, ConfigA) <> ""
     NumTopC = I - 1: ReDim Preserve Crafting(1, NumTopC)
     I = 0
     Do

@@ -10,7 +10,10 @@
 #基本信息
 Version=Beta1.3 #版本
 				#其实以下的格式也可以
+#原始概率
 CraftingProbability=0.7500 #制造成功概率
+Event.Random.Probability_0=0.3333
+Event.Random.Probability_1=0.0250
 
 #研究关系表达式
 #格式:需求研究ID<需求物品数量>解锁研究ID
@@ -184,5 +187,18 @@ Item.value_4=210
 Item.value_5=480
 Item.value_6=1280
 Item.value_7=59
+#---建筑相关---
+Building.Cost_0=10000
+Building.Time_0=3600
+Building.NeedItem_0=2*1+9*1
+Building.Cost_1=10000
+Building.Time_1=5400
+Building.NeedItem28=9*1+10*1
 #---自动物品效率(原始)---
-Item.efficiency_1=
+Item.efficiency_0=1
+Item.efficiency_1=2
+Item.efficiency_2=5
+Item.efficiency_3=10
+Item.efficiency_4=20
+Item.efficiency_5=50
+Item.efficiency_6=100
